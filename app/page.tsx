@@ -16,62 +16,61 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const linkSchema = z.object({
+  title: z.string().min(1, "제목을 입력해주세요."),
+  url: z.string().min(1, "URL을 입력해주세요.").refine((val) => {
+    try {
+      const urlToTest = val.startsWith("http") ? val : `https://${val}`;
+      new URL(urlToTest);
+      return true;
+    } catch {
+      return false;
+    }
+  }, "올바른 URL 형식이 아닙니다."),
+});
+
+type LinkFormValues = z.infer<typeof linkSchema>;
 
 export default function Page() {
   const [links, setLinks] = useState<Link[]>(DUMMY_LINKS);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [newLink, setNewLink] = useState({ title: "", url: "" });
-  const [errors, setErrors] = useState({ title: "", url: "" });
 
-  const validate = () => {
-    let isValid = true;
-    const newErrors = { title: "", url: "" };
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<LinkFormValues>({
+    resolver: zodResolver(linkSchema),
+    defaultValues: {
+      title: "",
+      url: "",
+    },
+  });
 
-    if (!newLink.title.trim()) {
-      newErrors.title = "제목을 입력해주세요.";
-      isValid = false;
-    }
-
-    if (!newLink.url.trim()) {
-      newErrors.url = "URL을 입력해주세요.";
-      isValid = false;
-    } else {
-      try {
-        const urlToTest = newLink.url.startsWith("http") ? newLink.url : `https://${newLink.url}`;
-        new URL(urlToTest);
-      } catch (e) {
-        newErrors.url = "올바른 URL 형식이 아닙니다.";
-        isValid = false;
-      }
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleAddLink = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validate()) return;
-
+  const onSubmit = (data: LinkFormValues) => {
     // Extract domain for favicon
     let domain = "";
-    const urlToUse = newLink.url.startsWith("http") ? newLink.url : `https://${newLink.url}`;
+    const urlToUse = data.url.startsWith("http") ? data.url : `https://${data.url}`;
     try {
       domain = new URL(urlToUse).hostname;
     } catch {
-      domain = newLink.url;
+      domain = data.url;
     }
 
     const linkToAdd: Link = {
       id: Math.random().toString(36).substring(2, 9),
-      title: newLink.title,
+      title: data.title,
       url: urlToUse,
       faviconUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
     };
 
     setLinks([...links, linkToAdd]);
-    setNewLink({ title: "", url: "" });
-    setErrors({ title: "", url: "" });
+    reset();
     setIsAddDialogOpen(false);
   };
 
@@ -134,7 +133,7 @@ export default function Page() {
               <DialogHeader>
                 <DialogTitle className="text-3xl font-black uppercase tracking-tighter italic">Add New Link</DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleAddLink} className="space-y-6 py-4">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 py-4">
                 <div className="space-y-2">
                   <Label htmlFor="title" className="text-sm font-bold uppercase tracking-widest text-white/60">Link Title</Label>
                   <Input
@@ -143,14 +142,10 @@ export default function Page() {
                     className={`bg-black border-2 rounded-none h-12 text-lg font-bold transition-colors ${
                       errors.title ? "border-destructive" : "border-white/20 focus:border-white"
                     }`}
-                    value={newLink.title}
-                    onChange={(e) => {
-                      setNewLink({ ...newLink, title: e.target.value });
-                      if (errors.title) setErrors({ ...errors, title: "" });
-                    }}
+                    {...register("title")}
                   />
                   {errors.title && (
-                    <p className="text-destructive text-xs font-bold uppercase tracking-tight">{errors.title}</p>
+                    <p className="text-destructive text-xs font-bold uppercase tracking-tight">{errors.title.message}</p>
                   )}
                 </div>
                 <div className="space-y-2">
@@ -161,14 +156,10 @@ export default function Page() {
                     className={`bg-black border-2 rounded-none h-12 text-lg font-bold transition-colors ${
                       errors.url ? "border-destructive" : "border-white/20 focus:border-white"
                     }`}
-                    value={newLink.url}
-                    onChange={(e) => {
-                      setNewLink({ ...newLink, url: e.target.value });
-                      if (errors.url) setErrors({ ...errors, url: "" });
-                    }}
+                    {...register("url")}
                   />
                   {errors.url && (
-                    <p className="text-destructive text-xs font-bold uppercase tracking-tight">{errors.url}</p>
+                    <p className="text-destructive text-xs font-bold uppercase tracking-tight">{errors.url.message}</p>
                   )}
                 </div>
                 <DialogFooter>
