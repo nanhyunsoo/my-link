@@ -21,15 +21,43 @@ export default function Page() {
   const [links, setLinks] = useState<Link[]>(DUMMY_LINKS);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newLink, setNewLink] = useState({ title: "", url: "" });
+  const [errors, setErrors] = useState({ title: "", url: "" });
+
+  const validate = () => {
+    let isValid = true;
+    const newErrors = { title: "", url: "" };
+
+    if (!newLink.title.trim()) {
+      newErrors.title = "제목을 입력해주세요.";
+      isValid = false;
+    }
+
+    if (!newLink.url.trim()) {
+      newErrors.url = "URL을 입력해주세요.";
+      isValid = false;
+    } else {
+      try {
+        const urlToTest = newLink.url.startsWith("http") ? newLink.url : `https://${newLink.url}`;
+        new URL(urlToTest);
+      } catch (e) {
+        newErrors.url = "올바른 URL 형식이 아닙니다.";
+        isValid = false;
+      }
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleAddLink = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newLink.title || !newLink.url) return;
+    if (!validate()) return;
 
     // Extract domain for favicon
     let domain = "";
+    const urlToUse = newLink.url.startsWith("http") ? newLink.url : `https://${newLink.url}`;
     try {
-      domain = new URL(newLink.url).hostname;
+      domain = new URL(urlToUse).hostname;
     } catch {
       domain = newLink.url;
     }
@@ -37,12 +65,13 @@ export default function Page() {
     const linkToAdd: Link = {
       id: Math.random().toString(36).substring(2, 9),
       title: newLink.title,
-      url: newLink.url.startsWith("http") ? newLink.url : `https://${newLink.url}`,
+      url: urlToUse,
       faviconUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
     };
 
     setLinks([...links, linkToAdd]);
     setNewLink({ title: "", url: "" });
+    setErrors({ title: "", url: "" });
     setIsAddDialogOpen(false);
   };
 
@@ -111,22 +140,36 @@ export default function Page() {
                   <Input
                     id="title"
                     placeholder="e.g. My Awesome Project"
-                    className="bg-black border-2 border-white/20 focus:border-white rounded-none h-12 text-lg font-bold"
+                    className={`bg-black border-2 rounded-none h-12 text-lg font-bold transition-colors ${
+                      errors.title ? "border-destructive" : "border-white/20 focus:border-white"
+                    }`}
                     value={newLink.title}
-                    onChange={(e) => setNewLink({ ...newLink, title: e.target.value })}
-                    required
+                    onChange={(e) => {
+                      setNewLink({ ...newLink, title: e.target.value });
+                      if (errors.title) setErrors({ ...errors, title: "" });
+                    }}
                   />
+                  {errors.title && (
+                    <p className="text-destructive text-xs font-bold uppercase tracking-tight">{errors.title}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="url" className="text-sm font-bold uppercase tracking-widest text-white/60">URL</Label>
                   <Input
                     id="url"
                     placeholder="https://example.com"
-                    className="bg-black border-2 border-white/20 focus:border-white rounded-none h-12 text-lg font-bold"
+                    className={`bg-black border-2 rounded-none h-12 text-lg font-bold transition-colors ${
+                      errors.url ? "border-destructive" : "border-white/20 focus:border-white"
+                    }`}
                     value={newLink.url}
-                    onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
-                    required
+                    onChange={(e) => {
+                      setNewLink({ ...newLink, url: e.target.value });
+                      if (errors.url) setErrors({ ...errors, url: "" });
+                    }}
                   />
+                  {errors.url && (
+                    <p className="text-destructive text-xs font-bold uppercase tracking-tight">{errors.url}</p>
+                  )}
                 </div>
                 <DialogFooter>
                   <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-14 text-xl font-black uppercase tracking-tighter transition-all active:scale-[0.98]">
