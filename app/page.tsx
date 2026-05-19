@@ -1,10 +1,51 @@
-import { DUMMY_LINKS } from "@/data/links";
+"use client";
+
+import { useState } from "react";
+import { DUMMY_LINKS, type Link } from "@/data/links";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { Share2, ExternalLink, Copy } from "lucide-react";
+import { Share2, ExternalLink, Copy, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function Page() {
+  const [links, setLinks] = useState<Link[]>(DUMMY_LINKS);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [newLink, setNewLink] = useState({ title: "", url: "" });
+
+  const handleAddLink = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLink.title || !newLink.url) return;
+
+    // Extract domain for favicon
+    let domain = "";
+    try {
+      domain = new URL(newLink.url).hostname;
+    } catch {
+      domain = newLink.url;
+    }
+
+    const linkToAdd: Link = {
+      id: Math.random().toString(36).substring(2, 9),
+      title: newLink.title,
+      url: newLink.url.startsWith("http") ? newLink.url : `https://${newLink.url}`,
+      faviconUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
+    };
+
+    setLinks([...links, linkToAdd]);
+    setNewLink({ title: "", url: "" });
+    setIsAddDialogOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white font-sans selection:bg-white selection:text-black">
       {/* Top Navigation / Action Bar */}
@@ -45,7 +86,58 @@ export default function Page() {
 
         {/* Link List Section - Neo-Brutalism */}
         <section className="w-full flex flex-col gap-5">
-          {DUMMY_LINKS.map((link) => (
+          {/* Add New Link Trigger - Based on @docs/WIREFRAME.md */}
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger
+              render={
+                <button className="group relative w-full outline-none mb-4">
+                  <div className="absolute inset-0 bg-primary/20 translate-x-1 translate-y-1 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-200"></div>
+                  <div className="relative bg-primary border-2 border-primary rounded-none p-5 flex items-center justify-center gap-2 transition-transform active:scale-[0.98] z-10">
+                    <Plus className="w-5 h-5 text-primary-foreground" strokeWidth={3} />
+                    <span className="text-xl font-black uppercase tracking-tighter text-primary-foreground">
+                      Add New Link
+                    </span>
+                  </div>
+                </button>
+              }
+            />
+            <DialogContent className="bg-[#0D0D0D] border-2 border-white rounded-none text-white sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle className="text-3xl font-black uppercase tracking-tighter italic">Add New Link</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleAddLink} className="space-y-6 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title" className="text-sm font-bold uppercase tracking-widest text-white/60">Link Title</Label>
+                  <Input
+                    id="title"
+                    placeholder="e.g. My Awesome Project"
+                    className="bg-black border-2 border-white/20 focus:border-white rounded-none h-12 text-lg font-bold"
+                    value={newLink.title}
+                    onChange={(e) => setNewLink({ ...newLink, title: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="url" className="text-sm font-bold uppercase tracking-widest text-white/60">URL</Label>
+                  <Input
+                    id="url"
+                    placeholder="https://example.com"
+                    className="bg-black border-2 border-white/20 focus:border-white rounded-none h-12 text-lg font-bold"
+                    value={newLink.url}
+                    onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
+                    required
+                  />
+                </div>
+                <DialogFooter>
+                  <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-14 text-xl font-black uppercase tracking-tighter transition-all active:scale-[0.98]">
+                    Save Link
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+
+          {links.map((link) => (
             <a
               key={link.id}
               href={link.url}
@@ -53,7 +145,6 @@ export default function Page() {
               rel="noopener noreferrer"
               className="group relative block w-full outline-none"
             >
-              {/* Neo-brutalist Shadow Effect */}
               <div className="absolute inset-0 bg-white translate-x-1.5 translate-y-1.5 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-200"></div>
               
               <Card className="relative bg-[#0D0D0D] border-2 border-white rounded-none overflow-hidden transition-transform active:scale-[0.98] z-10">
@@ -67,6 +158,7 @@ export default function Page() {
                           width={40}
                           height={40}
                           className="w-full h-full object-contain grayscale"
+                          unoptimized // Use unoptimized for external favicon URLs to avoid config issues in dev
                         />
                       </div>
                     )}
