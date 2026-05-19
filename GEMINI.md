@@ -1,64 +1,64 @@
-# MyLink (마이링크) - 프로젝트 지침서
+# MyLink - Project Instructions
 
-이 파일은 MyLink 프로젝트의 구조, 기술 스택, 개발 컨벤션 및 주요 워크플로우를 정의합니다. Gemini CLI와 협업할 때 이 지침을 최우선으로 참고합니다.
+This file defines the structure, technology stack, development conventions, and key workflows for the MyLink project. Refer to this as the primary guide when collaborating with Gemini CLI.
 
-## 1. 프로젝트 개요
-- **목적**: 흩어져 있는 개인의 온라인 활동을 하나의 고유한 URL(닉네임 기반)로 통합하여 보여주는 가장 단순한 링크 페이지 서비스 (Linktree 클론).
-- **주요 기능**:
-    - **사용자 인증**: Firebase Auth (구글 로그인 전용).
-    - **닉네임 기반 URL**: `my-link.com/{displayName}` 형식의 고유 주소 제공.
-    - **인라인 편집 (Inline Editing)**: 별도 이동 없이 화면에서 즉시 프로필 및 링크 수정.
-    - **링크 관리 (CRUD)**: 제목, URL 저장 및 자동 파비콘(Google Favicon API) 연동.
-    - **반응형 프로필 페이지**: ASALDESIGN 시스템(고대비 미니멀리즘)이 적용된 공개 페이지.
-- **문서**: 상세 요구사항은 `@docs/PRD.md`를 참고하세요.
+## 1. Project Overview
+- **Purpose**: A simple link page service (Linktree clone) that integrates scattered online activities into a single unique URL.
+- **Key Features**:
+    - **Authentication**: Firebase Auth (Google Login only).
+    - **Nickname-based URL**: Unique addresses in `my-link.com/{displayName}` format.
+    - **Inline Editing**: Immediate profile and link editing on screen without page navigation.
+    - **Link Management (CRUD)**: Title/URL storage and automatic favicon integration via Google Favicon API.
+    - **Responsive Profile Page**: Public pages using the ASALDESIGN system (High-contrast minimalism).
+- **Documentation**: See `@docs/PRD.md` for detailed requirements.
 
-## 2. 기술 스택
+## 2. Technical Stack
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS 4, shadcn/ui, ASALDESIGN System (Black & White)
 - **Backend**: Firebase Firestore, Firebase Auth
-- **Infrastructure**: Node.js (npm 사용)
+- **Infrastructure**: Node.js (npm)
 
-## 3. 주요 명령어
-- **개발 서버 실행**: `npm run dev`
-- **빌드**: `npm run build`
-- **프로덕션 서버 시작**: `npm run start`
-- **린트 체크**: `npm run lint`
-- **코드 포맷팅**: `npm run format` (Prettier)
-- **타입 체크**: `npm run typecheck`
+## 3. Key Commands
+- **Run Dev Server**: `npm run dev`
+- **Build**: `npm run build`
+- **Start Production Server**: `npm run start`
+- **Lint Check**: `npm run lint`
+- **Format**: `npm run format` (Prettier)
+- **Type Check**: `npm run typecheck`
 
-## 4. 디렉토리 구조
-- `@app/`: Next.js App Router 기반의 페이지 및 레이아웃
-- `@components/`: 재사용 가능한 UI 컴포넌트 및 shadcn/ui 컴포넌트
-- `@docs/`: PRD, 사용자 시나리오, 와이어프레임 등 설계 문서
-- `@hooks/`: 커스텀 React Hooks
-- `@lib/`: 유틸리티 함수 및 설정 파일
-- `@public/`: 정적 자산 (이미지, 파비콘 등)
+## 4. Directory Structure
+- `@app/`: Pages and layouts (Next.js App Router)
+- `@components/`: Reusable UI components and shadcn/ui components
+- `@docs/`: Design documents (PRD, User Scenario, Wireframe)
+- `@hooks/`: Custom React Hooks
+- `@lib/`: Utilities and configuration files
+- `@public/`: Static assets (images, favicons, etc.)
 
-## 5. 개발 컨벤션 및 원칙
-- **TypeScript 우선**: 모든 파일은 `.ts` 또는 `.tsx`로 작성하며 엄격한 타입 체크를 준수합니다.
-- **App Router 활용**: 서버 컴포넌트를 기본으로 사용하고 상호작용이 필요한 경우에만 `'use client'`를 사용합니다.
-- **인라인 편집 중심 UX**: 사용자 편의를 위해 모든 수정 사항은 인라인 편집 방식으로 구현합니다. (`@docs/WIREFRAME.md`의 ✎ 아이콘 참고)
-- **Surgical Updates**: 코드 수정 시 필요한 부분만 정확하게 수정하며, 불필요한 리팩토링은 지양합니다.
-- **디자인 시스템 준수**: ASALDESIGN (Black & White 고대비 미니멀리즘) 스타일을 Tailwind CSS로 구현합니다.
-- **커밋 메시지**: Git 커밋 메시지는 항상 **한글**로 작성합니다.
-- **파일 참조**: 문서 내에서 다른 파일을 참조할 때는 `@파일명` 형식을 사용합니다.
+## 5. Development Conventions & Principles
+- **TypeScript First**: All files must be `.ts` or `.tsx` with strict type checking.
+- **App Router Usage**: Prefer Server Components; use `'use client'` only for interactions.
+- **Inline Editing UX**: Implement all edits using inline editing for better UX (see ✎ icon in `@docs/WIREFRAME.md`).
+- **Surgical Updates**: Make precise changes; avoid unnecessary refactoring.
+- **Design System**: Follow ASALDESIGN (Black & White high-contrast minimalism) using Tailwind CSS.
+- **Commit Messages**: Always write Git commit messages in **Korean**.
+- **File References**: Use the `@filename` format when referring to files in documentation.
 
-## 6. 화면 구조 및 UI 원칙 ( @docs/WIREFRAME.md 참고)
-- **사용자 흐름**: 랜딩 페이지 -> 구글 로그인 -> 온보딩/대시보드 -> 공개 프로필 페이지.
-- **주요 화면 구성**:
-    - **메인 랜딩**: 서비스 소개 및 구글 로그인 CTA 중심의 심플한 구성.
-    - **대시보드 (Admin)**: 프로필 영역(아바타, 이름, ID, Bio)과 링크 관리 영역(링크 리스트, 추가 버튼)으로 구성. 편집 가능한 요소에는 연필 아이콘(`✎`) 표시.
-    - **공개 프로필 (Visitor)**: 편집 기능이 제거된 읽기 전용 페이지. 링크는 카드 형태로 표시되며 하단에 "Powered by MyLink" 브랜딩 포함.
-- **디자인 디테일**:
-    - 배경은 `#0D0D0D`(블랙), 주요 콘텐츠는 `#FFFFFF`(화이트)를 사용하는 고대비 레이아웃.
-    - 링크 블록 내 삭제 아이콘(Trash)을 통한 즉각적인 관리 기능 제공.
+## 6. Screen Structure & UI Principles (Refer to `@docs/WIREFRAME.md`)
+- **User Flow**: Landing Page -> Google Login -> Onboarding/Dashboard -> Public Profile Page.
+- **Main Layouts**:
+    - **Main Landing**: Simple intro with Google Login CTA.
+    - **Dashboard (Admin)**: Profile area (Avatar, Name, ID, Bio) and Link management area (Link list, Add button). Editable elements show `✎`.
+    - **Public Profile (Visitor)**: Read-only page without edit tools. Links are displayed as cards with "Powered by MyLink" branding.
+- **Design Details**:
+    - High-contrast layout: Background `#0D0D0D` (Black), Content `#FFFFFF` (White).
+    - Instant management via Trash icon in link blocks.
 
-## 7. 진행 상황 및 TODO
-- [x] 프로젝트 초기화 (Next.js 16, TS, Tailwind CSS 4)
-- [x] 프로젝트 구조 설정 및 문서화 ( @docs/PRD.md, @docs/USER_SCENARIO.md, @docs/WIREFRAME.md )
-- [ ] Firebase 설정 및 인증 기능 구현 (Google Login)
-- [ ] 대시보드(Admin) 화면 개발 (프로필 인라인 편집)
-- [ ] 링크 CRUD 및 자동 파비콘 기능 구현
-- [ ] 공개 프로필 페이지 개발
-- [ ] 배포 및 최종 검증
+## 7. Progress & TODO
+- [x] Project initialization (Next.js 16, TS, Tailwind CSS 4)
+- [x] Structure and documentation ( `@docs/PRD.md`, `@docs/USER_SCENARIO.md`, `@docs/WIREFRAME.md` )
+- [ ] Firebase setup and Auth implementation (Google Login)
+- [ ] Dashboard (Admin) development (Inline profile editing)
+- [ ] Link CRUD and auto-favicon implementation
+- [ ] Public profile page development
+- [ ] Deployment and final verification
