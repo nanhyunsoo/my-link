@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { DUMMY_LINKS, type Link } from "@/data/links";
+import { type Link } from "@/data/links";
+import { db } from "@/lib/firebase";
+import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from "firebase/firestore";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Share2, ExternalLink, Copy, Plus } from "lucide-react";
@@ -37,11 +39,28 @@ type LinkFormValues = z.infer<typeof linkSchema>;
 
 export default function Page() {
   const [mounted, setMounted] = useState(false);
-  const [links, setLinks] = useState<Link[]>(DUMMY_LINKS);
+  const [links, setLinks] = useState<Link[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+
+    const q = query(collection(db, "users/anonymous/links"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const linksData: Link[] = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        linksData.push({ 
+          id: doc.id, 
+          title: data.title,
+          url: data.url,
+          faviconUrl: data.faviconUrl
+        } as Link);
+      });
+      setLinks(linksData);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const {
@@ -57,7 +76,7 @@ export default function Page() {
     },
   });
 
-  const onSubmit = (data: LinkFormValues) => {
+  const onSubmit = async (data: LinkFormValues) => {
     // Extract domain for favicon
     let domain = "";
     const urlToUse = data.url.startsWith("http") ? data.url : `https://${data.url}`;
@@ -67,16 +86,19 @@ export default function Page() {
       domain = data.url;
     }
 
-    const linkToAdd: Link = {
-      id: Math.random().toString(36).substring(2, 9),
-      title: data.title,
-      url: urlToUse,
-      faviconUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
-    };
-
-    setLinks([...links, linkToAdd]);
-    reset();
-    setIsAddDialogOpen(false);
+    try {
+      await addDoc(collection(db, "users/anonymous/links"), {
+        title: data.title,
+        url: urlToUse,
+        faviconUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
+        createdAt: serverTimestamp(),
+      });
+      reset();
+      setIsAddDialogOpen(false);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      alert("링크 저장 중 오류가 발생했습니다.");
+    }
   };
 
   if (!mounted) {
