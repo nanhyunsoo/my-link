@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DUMMY_LINKS, type Link } from "@/data/links";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
@@ -36,8 +36,13 @@ const linkSchema = z.object({
 type LinkFormValues = z.infer<typeof linkSchema>;
 
 export default function Page() {
+  const [mounted, setMounted] = useState(false);
   const [links, setLinks] = useState<Link[]>(DUMMY_LINKS);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const {
     register,
@@ -73,6 +78,10 @@ export default function Page() {
     reset();
     setIsAddDialogOpen(false);
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white font-sans selection:bg-white selection:text-black">
