@@ -430,22 +430,22 @@ export default function Page() {
                     <p className="text-destructive text-xs font-bold uppercase tracking-tight">{errors.url.message}</p>
                   )}
                 </div>
-                <DialogFooter>
-                  <Button 
+                <div className="mt-6">
+                  <button 
                     type="submit" 
                     disabled={isSubmitting}
-                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-14 text-xl font-black uppercase tracking-tighter transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90 border-0 rounded-none h-14 text-xl font-black uppercase tracking-tighter transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {isSubmitting ? (
-                      <>
+                      <div className="flex items-center justify-center">
                         <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                         Saving...
-                      </>
+                      </div>
                     ) : (
                       "Save Link"
                     )}
-                  </Button>
-                </DialogFooter>
+                  </button>
+                </div>
               </form>
             </DialogContent>
           </Dialog>
