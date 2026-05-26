@@ -22,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/components/auth-provider";
+import { toast } from "sonner";
 
 const linkSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요."),
@@ -93,7 +94,7 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating document: ", error);
-      alert("링크 수정 중 오류가 발생했습니다.");
+      toast.error("링크 수정 중 오류가 발생했습니다.");
     } finally {
       setIsSubmitting(false);
     }
@@ -107,7 +108,7 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
       setIsDeleteDialogOpen(false);
     } catch (error) {
       console.error("Error deleting document: ", error);
-      alert("링크 삭제 중 오류가 발생했습니다.");
+      toast.error("링크 삭제 중 오류가 발생했습니다.");
     } finally {
       setIsSubmitting(false);
     }
@@ -380,7 +381,7 @@ export default function Page() {
       setIsAddDialogOpen(false);
     } catch (error) {
       console.error("Error adding document: ", error);
-      alert("링크 저장 중 오류가 발생했습니다.");
+      toast.error("링크 저장 중 오류가 발생했습니다.");
     } finally {
       setIsSubmitting(false);
     }
@@ -396,36 +397,65 @@ export default function Page() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#0D0D0D] text-white font-sans flex flex-col items-center justify-center p-6 text-center">
-        <div className="max-w-md space-y-8">
-          <div className="space-y-4">
-            <h1 className="text-6xl font-black tracking-tighter uppercase italic leading-none">
-              MyLink
+      <div className="min-h-screen bg-[#0D0D0D] text-white font-sans flex flex-col">
+        {/* Hero Section */}
+        <main className="flex-1 flex flex-col items-center pt-32 pb-24 px-6 text-center max-w-5xl mx-auto w-full">
+          <div className="space-y-8 max-w-2xl mt-12 md:mt-24 w-full flex flex-col items-center">
+            <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-tight">
+              Development <br />
+              in <span className="text-black bg-white px-2 italic">One Link.</span>
             </h1>
-            <p className="text-xl font-medium text-white/60 italic">
-              나만의 개발 링크를 한곳에서 관리하세요.
+            
+            <p className="text-lg md:text-xl font-medium text-white/60 leading-relaxed max-w-md mx-auto break-keep">
+              GitHub, 블로그, 포트폴리오까지.<br />
+              개발자를 위한 모든 링크를<br />
+              한 페이지에 담아보세요.
             </p>
+
+            <div className="pt-4 pb-12 w-full flex justify-center">
+              <Button 
+                size="lg" 
+                onClick={login}
+                className="w-full sm:w-auto min-w-[280px] bg-white text-black hover:bg-white/90 rounded-none h-14 text-lg font-black tracking-tighter"
+              >
+                <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                  <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+                Google로 시작하기
+              </Button>
+            </div>
+
+            {/* Mockup Graphic */}
+            <div className="relative w-full max-w-sm mx-auto mt-8 perspective-1000">
+              <div className="absolute inset-0 bg-white/20 translate-x-4 translate-y-4 rounded-none"></div>
+              <Card className="relative bg-[#0D0D0D] border-2 border-white rounded-none p-6 z-10 flex flex-col gap-4">
+                <div className="flex items-center gap-4 mb-2">
+                  <div className="w-12 h-12 bg-white/20 rounded-full"></div>
+                  <div className="space-y-2 flex-1 text-left">
+                    <div className="h-4 bg-white w-1/2"></div>
+                    <div className="h-3 bg-white/40 w-1/3"></div>
+                  </div>
+                </div>
+                <div className="h-14 bg-white/5 border-2 border-white/20 flex items-center px-4 gap-3">
+                   <div className="w-6 h-6 bg-white/40 rounded-full"></div>
+                   <div className="h-3 bg-white/40 w-1/2"></div>
+                </div>
+                <div className="h-14 bg-white/5 border-2 border-white/20 flex items-center px-4 gap-3">
+                   <div className="w-6 h-6 bg-white/40 rounded-full"></div>
+                   <div className="h-3 bg-white/40 w-1/2"></div>
+                </div>
+              </Card>
+            </div>
+
           </div>
-          
-          <div className="p-8 border-2 border-white/10 bg-white/5 space-y-6">
-            <p className="text-lg font-bold leading-relaxed">
-              링크를 관리하고 프로필을 커스터마이징하려면<br/>
-              구글 계정으로 로그인이 필요합니다.
-            </p>
-            <Button 
-              size="lg" 
-              onClick={login}
-              className="w-full bg-white text-black hover:bg-white/90 rounded-none h-14 text-xl font-black uppercase tracking-tighter"
-            >
-              <LogIn className="w-5 h-5 mr-2" />
-              Continue with Google
-            </Button>
-          </div>
-          
-          <footer className="pt-12 opacity-30">
-            <p className="text-[10px] font-black tracking-[0.3em] uppercase">Powered by MyLink</p>
-          </footer>
-        </div>
+        </main>
+
+        <footer className="py-8 text-center opacity-30 mt-auto">
+          <p className="text-[10px] font-black tracking-[0.3em] uppercase">Powered by MyLink</p>
+        </footer>
       </div>
     );
   }
@@ -462,7 +492,7 @@ export default function Page() {
               <span>@{profile?.id || "userid"}</span>
               <button className="hover:text-white transition-colors" onClick={() => {
                 navigator.clipboard.writeText(`@${profile?.id}`);
-                alert("ID가 복사되었습니다.");
+                toast.success("ID가 복사되었습니다.");
               }}>
                 <Copy className="w-3 h-3" />
               </button>

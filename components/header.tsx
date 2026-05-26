@@ -5,9 +5,25 @@ import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Share2, LogOut, LogIn } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 export function Header() {
   const { user, login, logout, loading } = useAuth();
+
+  const copyToClipboard = () => {
+    if (user) {
+      const url = `${window.location.origin}/p/${user.uid.slice(0, 8)}`;
+      navigator.clipboard.writeText(url);
+      toast.success("링크가 클립보드에 복사되었습니다.");
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-6 bg-[#0D0D0D]/80 backdrop-blur-md border-b border-white/10">
@@ -19,26 +35,35 @@ export function Header() {
         {!loading && (
           <>
             {user ? (
-              <>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={logout}
-                  className="rounded-none text-white/50 hover:text-white hover:bg-white/10 transition-colors font-bold uppercase tracking-tight"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Logout
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="rounded-none border-2 border-white hover:bg-white hover:text-black transition-colors font-bold uppercase tracking-tight"
-                >
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Share
-                </Button>
-              </>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="outline-none">
+                  <div className="relative w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-black flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
+                    {user.photoURL ? (
+                      <Image 
+                        src={user.photoURL} 
+                        alt={user.displayName || "User"} 
+                        fill 
+                        className="object-cover"
+                        unoptimized
+                      />
+                    ) : (
+                      <span className="text-sm font-black italic">
+                        {user.displayName?.slice(0, 2).toUpperCase() || "ML"}
+                      </span>
+                    )}
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={copyToClipboard} className="gap-2">
+                    <Share2 className="w-4 h-4" />
+                    Share My Link
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout} className="gap-2 text-red-500 hover:text-white hover:bg-red-500">
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Button 
                 variant="outline" 
