@@ -81,6 +81,7 @@ function LinkItem({ link }: { link: Link }) {
         title: data.title,
         url: urlToUse,
         faviconUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
+        updatedAt: serverTimestamp(),
       });
       setIsEditing(false);
     } catch (error) {
@@ -187,12 +188,13 @@ function LinkItem({ link }: { link: Link }) {
                   />
                 </div>
               )}
-              <span className="text-xl font-bold uppercase tracking-tight text-white truncate">
-                {link.title}
-              </span>
+              <div className="flex flex-col min-w-0">
+                <span className="text-xl font-bold uppercase tracking-tight text-white truncate">
+                  {link.title}
+                </span>
+              </div>
               <ExternalLink className="w-4 h-4 text-white/30 group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-all flex-shrink-0" />
             </a>
-
             <div className="flex gap-1">
               <Button
                 variant="ghost"
@@ -288,7 +290,9 @@ export default function Page() {
           id: doc.id, 
           title: data.title,
           url: data.url,
-          faviconUrl: data.faviconUrl
+          faviconUrl: data.faviconUrl,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt
         } as Link);
       });
       setLinks(linksData);
@@ -327,6 +331,7 @@ export default function Page() {
         url: urlToUse,
         faviconUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
         createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
       });
       reset();
       setIsAddDialogOpen(false);
