@@ -6,7 +6,7 @@ import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from "firebase/firestore";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { Share2, ExternalLink, Copy, Plus } from "lucide-react";
+import { Share2, ExternalLink, Copy, Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -41,6 +41,7 @@ export default function Page() {
   const [mounted, setMounted] = useState(false);
   const [links, setLinks] = useState<Link[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -77,6 +78,7 @@ export default function Page() {
   });
 
   const onSubmit = async (data: LinkFormValues) => {
+    setIsSubmitting(true);
     // Extract domain for favicon
     let domain = "";
     const urlToUse = data.url.startsWith("http") ? data.url : `https://${data.url}`;
@@ -98,6 +100,8 @@ export default function Page() {
     } catch (error) {
       console.error("Error adding document: ", error);
       alert("링크 저장 중 오류가 발생했습니다.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -194,8 +198,19 @@ export default function Page() {
                   )}
                 </div>
                 <DialogFooter>
-                  <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-14 text-xl font-black uppercase tracking-tighter transition-all active:scale-[0.98]">
-                    Save Link
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-14 text-xl font-black uppercase tracking-tighter transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      "Save Link"
+                    )}
                   </Button>
                 </DialogFooter>
               </form>
