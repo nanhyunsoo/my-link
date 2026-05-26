@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import { type Link } from "@/data/links";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc } from "firebase/firestore";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { Share2, ExternalLink, Copy, Plus, Loader2, Edit2, Trash2, Check, X } from "lucide-react";
+import { Share2, ExternalLink, Copy, Plus, Loader2, Edit2, Trash2, Check, X, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useAuth } from "@/components/auth-provider";
 
 const linkSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요."),
@@ -37,7 +38,14 @@ const linkSchema = z.object({
 
 type LinkFormValues = z.infer<typeof linkSchema>;
 
-function LinkItem({ link }: { link: Link }) {
+interface UserProfile {
+  name: string;
+  id: string;
+  bio: string;
+  photoURL?: string;
+}
+
+function LinkItem({ link, userId }: { link: Link; userId: string }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,7 +63,6 @@ function LinkItem({ link }: { link: Link }) {
     },
   });
 
-  // 수정 모드가 활성화될 때마다 현재 link 정보를 폼에 주입
   useEffect(() => {
     if (isEditing) {
       reset({
@@ -76,7 +83,7 @@ function LinkItem({ link }: { link: Link }) {
     }
 
     try {
-      const linkRef = doc(db, "users/anonymous/links", link.id);
+      const linkRef = doc(db, `users/${userId}/links`, link.id);
       await updateDoc(linkRef, {
         title: data.title,
         url: urlToUse,
@@ -95,7 +102,7 @@ function LinkItem({ link }: { link: Link }) {
   const onDelete = async () => {
     setIsSubmitting(true);
     try {
-      const linkRef = doc(db, "users/anonymous/links", link.id);
+      const linkRef = doc(db, `users/${userId}/links`, link.id);
       await deleteDoc(linkRef);
       setIsDeleteDialogOpen(false);
     } catch (error) {
@@ -273,15 +280,51 @@ function LinkItem({ link }: { link: Link }) {
 }
 
 export default function Page() {
+  const { user, loading: authLoading, login } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [links, setLinks] = useState<Link[]>([]);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
 
-    const q = query(collection(db, "users/anonymous/links"), orderBy("createdAt", "desc"));
+  useEffect(() => {
+    if (!user) {
+      setLinks([]);
+      setProfile(null);
+      return;
+    }
+
+    // Load Profile
+    const loadProfile = async () => {
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        setProfile(docSnap.data() as UserProfile);
+      } else {
+        // Initialize profile if it doesn't exist
+        // Use part of email before '@' as default name
+        const emailPrefix = user.email ? user.email.split("@")[0] : "Username";
+        
+        const initialProfile: UserProfile = {
+          name: emailPrefix,
+          id: user.uid.slice(0, 8),
+          bio: "Building the future of web through minimal design and efficient code.",
+          photoURL: user.photoURL || undefined
+        };
+        await setDoc(docRef, initialProfile);
+        setProfile(initialProfile);
+      }
+    };
+
+    loadProfile();
+
+    // Subscribe to Links
+    const q = query(collection(db, `users/${user.uid}/links`), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const linksData: Link[] = [];
       querySnapshot.forEach((doc) => {
@@ -299,7 +342,7 @@ export default function Page() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [user]);
 
   const {
     register,
@@ -315,8 +358,8 @@ export default function Page() {
   });
 
   const onSubmit = async (data: LinkFormValues) => {
+    if (!user) return;
     setIsSubmitting(true);
-    // Extract domain for favicon
     let domain = "";
     const urlToUse = data.url.startsWith("http") ? data.url : `https://${data.url}`;
     try {
@@ -326,7 +369,7 @@ export default function Page() {
     }
 
     try {
-      await addDoc(collection(db, "users/anonymous/links"), {
+      await addDoc(collection(db, `users/${user.uid}/links`), {
         title: data.title,
         url: urlToUse,
         faviconUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
@@ -343,51 +386,96 @@ export default function Page() {
     }
   };
 
-  if (!mounted) {
-    return null;
+  if (!mounted || authLoading) {
+    return (
+      <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-white animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[#0D0D0D] text-white font-sans flex flex-col items-center justify-center p-6 text-center">
+        <div className="max-w-md space-y-8">
+          <div className="space-y-4">
+            <h1 className="text-6xl font-black tracking-tighter uppercase italic leading-none">
+              MyLink
+            </h1>
+            <p className="text-xl font-medium text-white/60 italic">
+              나만의 개발 링크를 한곳에서 관리하세요.
+            </p>
+          </div>
+          
+          <div className="p-8 border-2 border-white/10 bg-white/5 space-y-6">
+            <p className="text-lg font-bold leading-relaxed">
+              링크를 관리하고 프로필을 커스터마이징하려면<br/>
+              구글 계정으로 로그인이 필요합니다.
+            </p>
+            <Button 
+              size="lg" 
+              onClick={login}
+              className="w-full bg-white text-black hover:bg-white/90 rounded-none h-14 text-xl font-black uppercase tracking-tighter"
+            >
+              <LogIn className="w-5 h-5 mr-2" />
+              Continue with Google
+            </Button>
+          </div>
+          
+          <footer className="pt-12 opacity-30">
+            <p className="text-[10px] font-black tracking-[0.3em] uppercase">Powered by MyLink</p>
+          </footer>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white font-sans selection:bg-white selection:text-black">
-      {/* Top Navigation / Action Bar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-6 bg-[#0D0D0D]/80 backdrop-blur-md border-b border-white/10">
-        <span className="text-xl font-black tracking-tighter uppercase italic">MyLink</span>
-        <Button variant="outline" size="sm" className="rounded-none border-2 border-white hover:bg-white hover:text-black transition-colors font-bold uppercase tracking-tight">
-          <Share2 className="w-4 h-4 mr-2" />
-          Share
-        </Button>
-      </nav>
-
       <main className="max-w-2xl mx-auto pt-32 pb-24 px-6 flex flex-col items-center">
-        {/* Profile Section - Exaggerated Minimalism */}
+        {/* Profile Section */}
         <section className="flex flex-col items-center text-center mb-16 space-y-6">
           <div className="relative group">
             <div className="absolute -inset-1 bg-white opacity-25 group-hover:opacity-100 transition duration-500 blur-sm rounded-full"></div>
             <div className="relative w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-black flex items-center justify-center">
-               <span className="text-4xl font-black italic">ML</span>
+               {profile?.photoURL ? (
+                 <Image 
+                   src={profile.photoURL} 
+                   alt={profile.name} 
+                   fill 
+                   className="object-cover"
+                   unoptimized
+                 />
+               ) : (
+                 <span className="text-4xl font-black italic">
+                   {profile?.name?.slice(0, 2).toUpperCase() || "ML"}
+                 </span>
+               )}
             </div>
           </div>
           
           <div className="space-y-2">
             <h1 className="text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none">
-              Username
+              {profile?.name || "Username"}
             </h1>
             <div className="flex items-center justify-center gap-2 text-white/60 font-mono text-sm tracking-widest uppercase">
-              <span>@displayname_id</span>
-              <button className="hover:text-white transition-colors">
+              <span>@{profile?.id || "userid"}</span>
+              <button className="hover:text-white transition-colors" onClick={() => {
+                navigator.clipboard.writeText(`@${profile?.id}`);
+                alert("ID가 복사되었습니다.");
+              }}>
                 <Copy className="w-3 h-3" />
               </button>
             </div>
           </div>
 
           <p className="max-w-[280px] text-lg font-medium leading-tight text-white/80 italic">
-            &quot;Building the future of web through minimal design and efficient code.&quot;
+            &quot;{profile?.bio || "No bio yet."}&quot;
           </p>
         </section>
 
-        {/* Link List Section - Neo-Brutalism */}
+        {/* Link List Section */}
         <section className="w-full flex flex-col gap-5">
-          {/* Add New Link Trigger - Based on @docs/WIREFRAME.md */}
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger
               render={
@@ -456,8 +544,14 @@ export default function Page() {
           </Dialog>
 
           {links.map((link) => (
-            <LinkItem key={link.id} link={link} />
+            <LinkItem key={link.id} link={link} userId={user.uid} />
           ))}
+
+          {links.length === 0 && !isSubmitting && (
+            <div className="text-center py-12 border-2 border-dashed border-white/10 opacity-30">
+              <p className="font-bold uppercase tracking-widest">No links yet</p>
+            </div>
+          )}
         </section>
 
         {/* Footer */}
