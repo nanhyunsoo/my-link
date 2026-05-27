@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { type Link } from "@/data/links";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc, getDocs, where } from "firebase/firestore";
+import { collection, query, doc, getDocs, where } from "firebase/firestore";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Share2, ExternalLink, Copy, Plus, Loader2, Edit2, Trash2, Check, X, LogIn } from "lucide-react";
@@ -23,6 +23,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/components/auth-provider";
 import { toast } from "sonner";
+import { useProfile, useUpdateProfile, type UserProfile } from "@/hooks/use-profile";
+import { useLinks, useAddLink, useUpdateLink, useDeleteLink } from "@/hooks/use-links";
 
 const linkSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요."),
@@ -52,17 +54,12 @@ const profileSchema = z.object({
 type LinkFormValues = z.infer<typeof linkSchema>;
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
-interface UserProfile {
-  name: string;
-  id: string;
-  bio: string;
-  photoURL?: string;
-}
-
 function LinkItem({ link, userId }: { link: Link; userId: string }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const updateLink = useUpdateLink();
+  const deleteLink = useDeleteLink();
 
   const {
     register,
@@ -87,7 +84,6 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
   }, [isEditing, link, reset]);
 
   const onUpdate = async (data: LinkFormValues) => {
-    setIsSubmitting(true);
     let domain = "";
     const urlToUse = data.url.startsWith("http") ? data.url : `https://${data.url}`;
     try {
@@ -96,36 +92,24 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
       domain = data.url;
     }
 
-    try {
-      const linkRef = doc(db, `users/${userId}/links`, link.id);
-      await updateDoc(linkRef, {
+    await updateLink.mutateAsync({
+      userId,
+      linkId: link.id,
+      data: {
         title: data.title,
         url: urlToUse,
         faviconUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
-        updatedAt: serverTimestamp(),
-      });
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Error updating document: ", error);
-      toast.error("링크 수정 중 오류가 발생했습니다.");
-    } finally {
-      setIsSubmitting(false);
-    }
+      },
+    });
+    setIsEditing(false);
   };
 
   const onDelete = async () => {
-    setIsSubmitting(true);
-    try {
-      const linkRef = doc(db, `users/${userId}/links`, link.id);
-      await deleteDoc(linkRef);
-      setIsDeleteDialogOpen(false);
-    } catch (error) {
-      console.error("Error deleting document: ", error);
-      toast.error("링크 삭제 중 오류가 발생했습니다.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    await deleteLink.mutateAsync({ userId, linkId: link.id });
+    setIsDeleteDialogOpen(false);
   };
+
+  const isSubmitting = updateLink.isPending || deleteLink.isPending;
 
   if (isEditing) {
     return (
@@ -296,11 +280,17 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
 export default function Page() {
   const { user, loading: authLoading, login } = useAuth();
   const [mounted, setMounted] = useState(false);
-  const [links, setLinks] = useState<Link[]>([]);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Queries
+  const { data: profile, isLoading: profileLoading } = useProfile(user);
+  const { data: links = [], isLoading: linksLoading } = useLinks(user?.uid);
+  
+  // Mutations
+  const addLink = useAddLink();
+  const updateProfile = useUpdateProfile();
+
   const [isCheckingName, setIsCheckingName] = useState(false);
   const [isCheckingId, setIsCheckingId] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
@@ -397,79 +387,17 @@ export default function Page() {
 
   const onProfileSubmit = async (data: ProfileFormValues) => {
     if (!user || !profile || nameError || idError) return;
-    setIsSubmitting(true);
-
-    try {
-      const docRef = doc(db, "users", user.uid);
-      await updateDoc(docRef, {
+    
+    await updateProfile.mutateAsync({
+      userId: user.uid,
+      data: {
         name: data.name,
         id: data.id,
         bio: data.bio,
-      });
-      
-      setProfile({ ...profile, name: data.name, id: data.id, bio: data.bio });
-      setIsProfileDialogOpen(false);
-      toast.success("프로필이 업데이트되었습니다.");
-    } catch (error) {
-      console.error("Error updating profile: ", error);
-      toast.error("프로필 수정 중 오류가 발생했습니다.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!user) {
-      setLinks([]);
-      setProfile(null);
-      return;
-    }
-
-    // Load Profile
-    const loadProfile = async () => {
-      const docRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        setProfile(docSnap.data() as UserProfile);
-      } else {
-        // Initialize profile if it doesn't exist
-        // Use part of email before '@' as default name
-        const emailPrefix = user.email ? user.email.split("@")[0] : "Username";
-        
-        const initialProfile: UserProfile = {
-          name: emailPrefix,
-          id: user.uid.slice(0, 8),
-          bio: "Building the future of web through minimal design and efficient code.",
-          photoURL: user.photoURL || undefined
-        };
-        await setDoc(docRef, initialProfile);
-        setProfile(initialProfile);
-      }
-    };
-
-    loadProfile();
-
-    // Subscribe to Links
-    const q = query(collection(db, `users/${user.uid}/links`), orderBy("createdAt", "desc"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const linksData: Link[] = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        linksData.push({ 
-          id: doc.id, 
-          title: data.title,
-          url: data.url,
-          faviconUrl: data.faviconUrl,
-          createdAt: data.createdAt,
-          updatedAt: data.updatedAt
-        } as Link);
-      });
-      setLinks(linksData);
+      },
     });
-
-    return () => unsubscribe();
-  }, [user]);
+    setIsProfileDialogOpen(false);
+  };
 
   const {
     register,
@@ -486,7 +414,6 @@ export default function Page() {
 
   const onSubmit = async (data: LinkFormValues) => {
     if (!user) return;
-    setIsSubmitting(true);
     let domain = "";
     const urlToUse = data.url.startsWith("http") ? data.url : `https://${data.url}`;
     try {
@@ -495,25 +422,21 @@ export default function Page() {
       domain = data.url;
     }
 
-    try {
-      await addDoc(collection(db, `users/${user.uid}/links`), {
+    await addLink.mutateAsync({
+      userId: user.uid,
+      link: {
         title: data.title,
         url: urlToUse,
         faviconUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-      reset();
-      setIsAddDialogOpen(false);
-    } catch (error) {
-      console.error("Error adding document: ", error);
-      toast.error("링크 저장 중 오류가 발생했습니다.");
-    } finally {
-      setIsSubmitting(false);
-    }
+      },
+    });
+    reset();
+    setIsAddDialogOpen(false);
   };
 
-  if (!mounted || authLoading) {
+  const isSubmitting = addLink.isPending || updateProfile.isPending;
+
+  if (!mounted || authLoading || profileLoading) {
     return (
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-white animate-spin" />
