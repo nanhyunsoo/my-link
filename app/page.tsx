@@ -120,7 +120,7 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
                 {...register("title")}
                 placeholder="Link Title"
                 className={`bg-black border-2 rounded-none h-10 text-base font-bold transition-colors ${
-                  errors.title ? "border-destructive" : "border-white/20 focus:border-white"
+                  errors.title ? "border-destructive" : "border-white/40 focus:border-white"
                 }`}
               />
               {errors.title && (
@@ -132,7 +132,7 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
                 {...register("url")}
                 placeholder="URL"
                 className={`bg-black border-2 rounded-none h-10 text-base font-bold transition-colors ${
-                  errors.url ? "border-destructive" : "border-white/20 focus:border-white"
+                  errors.url ? "border-destructive" : "border-white/40 focus:border-white"
                 }`}
               />
               {errors.url && (
@@ -197,13 +197,13 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
                   {link.title}
                 </span>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <BarChart3 className="w-3 h-3 text-white/40" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                  <BarChart3 className="w-3 h-3 text-white/70" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/70">
                     {link.clicks || 0}
                   </span>
                 </div>
               </div>
-              <ExternalLink className="w-4 h-4 text-white/30 group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-all flex-shrink-0" />
+              <ExternalLink className="w-4 h-4 text-white/60 group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-all flex-shrink-0" />
             </a>
             <div className="flex gap-1">
               <Button
@@ -243,7 +243,7 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
           
           <div className="py-4 space-y-4">
             <div className="space-y-1">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-white/40">Link to delete</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/70">Link to delete</p>
               <p className="text-xl font-black uppercase tracking-tight truncate">{link.title}</p>
             </div>
             
@@ -457,10 +457,10 @@ export default function Page() {
           <div className="space-y-8 max-w-2xl mt-12 md:mt-24 w-full flex flex-col items-center">
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-tight">
               Development <br />
-              in <span className="text-black bg-white px-2 italic">One Link.</span>
+              in <span className="text-white bg-primary px-2 italic text-nowrap">One Link.</span>
             </h1>
             
-            <p className="text-lg md:text-xl font-medium text-white/60 leading-relaxed max-w-md mx-auto break-keep">
+            <p className="text-lg md:text-xl font-medium text-white/80 leading-relaxed max-w-md mx-auto break-keep">
               GitHub, Blog, Portfolio.<br />
               All links for developers<br />
               in a single page.
@@ -493,11 +493,11 @@ export default function Page() {
                     <div className="h-3 bg-white/40 w-1/3"></div>
                   </div>
                 </div>
-                <div className="h-14 bg-white/5 border-2 border-white/20 flex items-center px-4 gap-3">
+                <div className="h-14 bg-white/5 border-2 border-white/40 flex items-center px-4 gap-3">
                    <div className="w-6 h-6 bg-white/40 rounded-full"></div>
                    <div className="h-3 bg-white/40 w-1/2"></div>
                 </div>
-                <div className="h-14 bg-white/5 border-2 border-white/20 flex items-center px-4 gap-3">
+                <div className="h-14 bg-white/5 border-2 border-white/40 flex items-center px-4 gap-3">
                    <div className="w-6 h-6 bg-white/40 rounded-full"></div>
                    <div className="h-3 bg-white/40 w-1/2"></div>
                 </div>
@@ -507,7 +507,7 @@ export default function Page() {
           </div>
         </main>
 
-        <footer className="py-8 text-center opacity-30 mt-auto">
+        <footer className="py-8 text-center opacity-60 mt-auto">
           <p className="text-[10px] font-black tracking-[0.3em] uppercase">Powered by MyLink</p>
         </footer>
       </div>
@@ -563,19 +563,19 @@ export default function Page() {
                       </DialogHeader>
                       <form onSubmit={handleProfileSubmit(onProfileSubmit)} className="space-y-6 py-4">
                         <div className="space-y-2">
-                          <Label htmlFor="profile-name" className="text-sm font-bold uppercase tracking-widest text-white/60">Display Name</Label>
+                          <Label htmlFor="profile-name" className="text-sm font-bold uppercase tracking-widest text-white/90">Display Name</Label>
                           <div className="relative">
                             <Input
                               id="profile-name"
                               placeholder="Your Display Name"
                               className={`bg-black border-2 rounded-none h-12 text-lg font-bold transition-colors ${
-                                profileErrors.name || nameError ? "border-destructive" : "border-white/20 focus:border-white"
+                                profileErrors.name || nameError ? "border-destructive" : "border-white/40 focus:border-white"
                               }`}
                               {...registerProfile("name")}
                             />
                             {isCheckingName && (
                               <div className="absolute right-3 top-3">
-                                <Loader2 className="w-6 h-6 animate-spin text-white/30" />
+                                <Loader2 className="w-6 h-6 animate-spin text-white/60" />
                               </div>
                             )}
                           </div>
@@ -586,20 +586,20 @@ export default function Page() {
                           )}
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="profile-id" className="text-sm font-bold uppercase tracking-widest text-white/60">User ID</Label>
+                          <Label htmlFor="profile-id" className="text-sm font-bold uppercase tracking-widest text-white/90">User ID</Label>
                           <div className="relative">
-                            <span className="absolute left-3 top-3 text-lg font-bold text-white/30">@</span>
+                            <span className="absolute left-3 top-3 text-lg font-bold text-white/60">@</span>
                             <Input
                               id="profile-id"
                               placeholder="username"
                               className={`bg-black border-2 rounded-none h-12 pl-8 text-lg font-bold transition-colors ${
-                                profileErrors.id || idError ? "border-destructive" : "border-white/20 focus:border-white"
+                                profileErrors.id || idError ? "border-destructive" : "border-white/40 focus:border-white"
                               }`}
                               {...registerProfile("id")}
                             />
                             {isCheckingId && (
                               <div className="absolute right-3 top-3">
-                                <Loader2 className="w-6 h-6 animate-spin text-white/30" />
+                                <Loader2 className="w-6 h-6 animate-spin text-white/60" />
                               </div>
                             )}
                           </div>
@@ -610,12 +610,12 @@ export default function Page() {
                           )}
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="bio" className="text-sm font-bold uppercase tracking-widest text-white/60">Bio</Label>
+                          <Label htmlFor="bio" className="text-sm font-bold uppercase tracking-widest text-white/90">Bio</Label>
                           <textarea
                             id="bio"
                             placeholder="Tell us about yourself"
                             rows={3}
-                            className={`w-full bg-black border-2 border-white/20 focus:border-white rounded-none p-3 text-lg font-bold transition-colors outline-none resize-none ${
+                            className={`w-full bg-black border-2 border-white/40 focus:border-white rounded-none p-3 text-lg font-bold transition-colors outline-none resize-none ${
                               profileErrors.bio ? "border-destructive" : ""
                             }`}
                             {...registerProfile("bio")}
@@ -660,7 +660,7 @@ export default function Page() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center justify-center gap-2 text-white/60 font-mono text-sm tracking-widest uppercase">
+            <div className="flex items-center justify-center gap-2 text-white/90 font-mono text-sm tracking-widest uppercase">
               <span>@{profile?.id || "userid"}</span>
               <button className="hover:text-white transition-colors" onClick={() => {
                 navigator.clipboard.writeText(`@${profile?.id}`);
@@ -698,12 +698,12 @@ export default function Page() {
               </DialogHeader>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="title" className="text-sm font-bold uppercase tracking-widest text-white/60">Link Title</Label>
+                  <Label htmlFor="title" className="text-sm font-bold uppercase tracking-widest text-white/90">Link Title</Label>
                   <Input
                     id="title"
                     placeholder="e.g. My Awesome Project"
                     className={`bg-black border-2 rounded-none h-12 text-lg font-bold transition-colors ${
-                      errors.title ? "border-destructive" : "border-white/20 focus:border-white"
+                      errors.title ? "border-destructive" : "border-white/40 focus:border-white"
                     }`}
                     {...register("title")}
                   />
@@ -712,12 +712,12 @@ export default function Page() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="url" className="text-sm font-bold uppercase tracking-widest text-white/60">URL</Label>
+                  <Label htmlFor="url" className="text-sm font-bold uppercase tracking-widest text-white/90">URL</Label>
                   <Input
                     id="url"
                     placeholder="https://example.com"
                     className={`bg-black border-2 rounded-none h-12 text-lg font-bold transition-colors ${
-                      errors.url ? "border-destructive" : "border-white/20 focus:border-white"
+                      errors.url ? "border-destructive" : "border-white/40 focus:border-white"
                     }`}
                     {...register("url")}
                   />
@@ -750,14 +750,14 @@ export default function Page() {
           ))}
 
           {links.length === 0 && !isSubmitting && (
-            <div className="text-center py-12 border-2 border-dashed border-white/10 opacity-30">
+            <div className="text-center py-12 border-2 border-dashed border-white/30 opacity-60">
               <p className="font-bold uppercase tracking-widest">No links yet</p>
             </div>
           )}
         </section>
 
         {/* Footer */}
-        <footer className="mt-32 flex flex-col items-center gap-4 opacity-40 hover:opacity-100 transition-opacity">
+        <footer className="mt-32 flex flex-col items-center gap-4 opacity-70 hover:opacity-100 transition-opacity">
           <div className="w-8 h-[2px] bg-white"></div>
           <p className="text-xs font-black tracking-[0.3em] uppercase">Powered by MyLink</p>
         </footer>

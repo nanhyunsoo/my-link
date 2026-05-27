@@ -3,7 +3,7 @@
 import React from "react";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
-import { Share2, LogOut, LogIn, User, ExternalLink } from "lucide-react";
+import { Share2, LogOut, LogIn, User, ExternalLink, BarChart3 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -73,15 +73,26 @@ export function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   {profile && (
-                    <DropdownMenuItem
-                      render={
-                        <Link href={`/${profile.id}`}>
-                          <User className="w-4 h-4 mr-2" />
-                          View My Page
-                        </Link>
-                      }
-                      className="cursor-pointer"
-                    />
+                    <>
+                      <DropdownMenuItem
+                        render={
+                          <Link href={`/${profile.id}`}>
+                            <User className="w-4 h-4 mr-2" />
+                            View My Page
+                          </Link>
+                        }
+                        className="cursor-pointer"
+                      />
+                      <DropdownMenuItem
+                        render={
+                          <Link href="/stats">
+                            <BarChart3 className="w-4 h-4 mr-2" />
+                            Statistics
+                          </Link>
+                        }
+                        className="cursor-pointer"
+                      />
+                    </>
                   )}
                   <DropdownMenuItem onClick={copyToClipboard} className="gap-2 cursor-pointer">
                     <Share2 className="w-4 h-4" />

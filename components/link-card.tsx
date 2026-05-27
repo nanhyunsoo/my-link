@@ -48,7 +48,7 @@ export function LinkCard({ link, userId }: LinkCardProps) {
                 {link.title}
               </span>
             </div>
-            <ExternalLink className="w-4 h-4 text-white/30 group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-all flex-shrink-0" />
+            <ExternalLink className="w-4 h-4 text-white/60 group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-all flex-shrink-0" />
           </a>
         </CardContent>
       </Card>

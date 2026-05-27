@@ -47,12 +47,12 @@ export default async function PublicProfilePage({ params }: PageProps) {
             <h1 className="text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none truncate max-w-[90%] mx-auto">
               {profile.name}
             </h1>
-            <div className="text-white/40 font-mono text-sm tracking-widest uppercase">
+            <div className="text-white/70 font-mono text-sm tracking-widest uppercase">
               @{profile.id}
             </div>
           </div>
 
-          <p className="max-w-[320px] text-lg font-medium leading-tight text-white/80 italic break-keep">
+          <p className="max-w-[320px] text-lg font-medium leading-tight text-white italic break-keep">
             &quot;{profile.bio}&quot;
           </p>
         </section>
@@ -64,16 +64,16 @@ export default async function PublicProfilePage({ params }: PageProps) {
           ))}
 
           {links.length === 0 && (
-            <div className="text-center py-12 border-2 border-dashed border-white/10 opacity-30">
-              <p className="font-bold uppercase tracking-widest">No links available</p>
+            <div className="text-center py-12 border-2 border-dashed border-white/30 opacity-60">
+              <p className="font-bold uppercase tracking-widest text-white/70">No links available</p>
             </div>
           )}
         </section>
 
         {/* Footer */}
-        <footer className="mt-32 flex flex-col items-center gap-4 opacity-40">
+        <footer className="mt-32 flex flex-col items-center gap-4 opacity-70">
           <div className="w-8 h-[2px] bg-white"></div>
-          <p className="text-xs font-black tracking-[0.3em] uppercase">Powered by MyLink</p>
+          <p className="text-xs font-black tracking-[0.3em] uppercase text-white">Powered by MyLink</p>
         </footer>
       </main>
     </div>
