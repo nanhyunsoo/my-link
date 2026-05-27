@@ -16,9 +16,7 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
-// NEXT_PUBLIC_BASE_URL 환경변수 우선 사용, 없으면 VERCEL_URL, 없으면 폴백
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-  || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://my-link-bay-one.vercel.app");
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://my-link-bay-one.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),

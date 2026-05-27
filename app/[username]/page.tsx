@@ -10,8 +10,7 @@ interface PageProps {
   params: Promise<{ username: string }>;
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-  || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://my-link-bay-one.vercel.app");
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://my-link-bay-one.vercel.app";
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { username } = await params;
