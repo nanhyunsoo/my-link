@@ -6,7 +6,7 @@ import { db } from "@/lib/firebase";
 import { collection, query, doc, getDocs, where } from "firebase/firestore";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { Share2, ExternalLink, Copy, Plus, Loader2, Edit2, Trash2, Check, X, LogIn, BarChart3 } from "lucide-react";
+import { Share2, ExternalLink, Copy, Plus, Loader2, Edit2, Trash2, Check, X, LogIn, BarChart3, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -451,64 +451,194 @@ export default function Page() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#0D0D0D] text-white font-sans flex flex-col">
+      <div className="min-h-screen bg-[#0D0D0D] text-white font-sans flex flex-col relative overflow-hidden">
+        {/* Background Grid */}
+        <div 
+          className="absolute inset-0 z-0 pointer-events-none opacity-20"
+          style={{ 
+            backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px)', 
+            backgroundSize: '32px 32px' 
+          }}
+        ></div>
+
         {/* Hero Section */}
-        <main className="flex-1 flex flex-col items-center pt-32 pb-24 px-6 text-center max-w-5xl mx-auto w-full">
-          <div className="space-y-8 max-w-2xl mt-12 md:mt-24 w-full flex flex-col items-center">
-            <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-tight">
-              Development <br />
-              in <span className="text-white bg-primary px-2 italic text-nowrap">One Link.</span>
-            </h1>
-            
-            <p className="text-lg md:text-xl font-medium text-white/80 leading-relaxed max-w-md mx-auto break-keep">
-              GitHub, Blog, Portfolio.<br />
-              All links for developers<br />
-              in a single page.
-            </p>
+        <main className="relative z-10 flex flex-col items-center justify-between h-[100svh] pt-24 pb-12 px-6 text-center max-w-5xl mx-auto w-full">
+          {/* Spacer for vertical centering logic */}
+          <div className="flex-1 flex flex-col items-center justify-center w-full min-h-0">
+            <div className="space-y-10 md:space-y-12 max-w-4xl w-full flex flex-col items-center">
+              <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[9rem] font-black tracking-tighter leading-[0.9] uppercase break-keep">
+                Development <br />
+                in <span className="text-white bg-primary px-3 italic text-nowrap">One Link.</span>
+              </h1>
+              
+              <p className="text-lg md:text-xl lg:text-2xl font-medium text-white/80 leading-relaxed max-w-xl mx-auto break-keep">
+                GitHub, Blog, Portfolio.<br />
+                All links for developers<br />
+                in a single page.
+              </p>
 
-            <div className="pt-4 pb-12 w-full flex justify-center">
-              <Button 
-                size="lg" 
-                onClick={login}
-                className="w-full sm:w-auto min-w-[280px] bg-white text-black hover:bg-white/90 rounded-none h-14 text-lg font-black tracking-tighter"
-              >
-                <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                  <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                  <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                  <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                  <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                </svg>
-                Sign in with Google
-              </Button>
+              <div className="pt-2 w-full flex justify-center">
+                <Button 
+                  size="lg" 
+                  onClick={login}
+                  className="w-full sm:w-auto min-w-[280px] bg-white text-black hover:bg-white/90 rounded-none h-14 md:h-16 text-lg md:text-xl font-black tracking-tighter cursor-pointer"
+                >
+                  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                    <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                    <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                  </svg>
+                  Sign in with Google
+                </Button>
+              </div>
             </div>
+          </div>
 
-            {/* Mockup Graphic */}
-            <div className="relative w-full max-w-sm mx-auto mt-8 perspective-1000">
-              <div className="absolute inset-0 bg-white/20 translate-x-4 translate-y-4 rounded-none"></div>
-              <Card className="relative bg-[#0D0D0D] border-2 border-white rounded-none p-6 z-10 flex flex-col gap-4">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-12 bg-white/20 rounded-full"></div>
-                  <div className="space-y-2 flex-1 text-left">
-                    <div className="h-4 bg-white w-1/2"></div>
-                    <div className="h-3 bg-white/40 w-1/3"></div>
-                  </div>
-                </div>
-                <div className="h-14 bg-white/5 border-2 border-white/40 flex items-center px-4 gap-3">
-                   <div className="w-6 h-6 bg-white/40 rounded-full"></div>
-                   <div className="h-3 bg-white/40 w-1/2"></div>
-                </div>
-                <div className="h-14 bg-white/5 border-2 border-white/40 flex items-center px-4 gap-3">
-                   <div className="w-6 h-6 bg-white/40 rounded-full"></div>
-                   <div className="h-3 bg-white/40 w-1/2"></div>
-                </div>
-              </Card>
-            </div>
-
+          {/* Scroll Indicator - Relative within flex container for safety */}
+          <div className="flex flex-col items-center gap-2 animate-bounce mt-8 shrink-0">
+             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 italic">Scroll to explore</span>
+             <ChevronDown className="w-6 h-6 text-white/40" />
           </div>
         </main>
 
-        <footer className="py-8 text-center opacity-60 mt-auto">
-          <p className="text-[10px] font-black tracking-[0.3em] uppercase">Powered by MyLink</p>
+        {/* Content Sections */}
+        <div className="relative z-10 max-w-5xl mx-auto w-full px-6 flex flex-col items-center pb-32">
+            {/* Feature Cards Section */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mt-12">
+              <div className="group relative h-full">
+                <div className="absolute inset-0 bg-white/10 translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform"></div>
+                <div className="relative bg-black border-2 border-white/40 p-6 flex flex-col items-center gap-4 text-center h-full">
+                  <div className="w-12 h-12 bg-white/10 flex items-center justify-center border-2 border-white/20">
+                    <Plus className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-black uppercase tracking-tighter italic">Link Management</h3>
+                    <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-relaxed">
+                      Manage all links <br />in one place.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="group relative h-full">
+                <div className="absolute inset-0 bg-primary/20 translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform"></div>
+                <div className="relative bg-black border-2 border-primary/40 p-6 flex flex-col items-center gap-4 text-center h-full">
+                  <div className="w-12 h-12 bg-primary/10 flex items-center justify-center border-2 border-primary/20">
+                    <BarChart3 className="w-6 h-6 text-primary" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-black uppercase tracking-tighter italic text-primary">Click Stats</h3>
+                    <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-relaxed">
+                      Real-time click <br />analytics.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="group relative h-full">
+                <div className="absolute inset-0 bg-white/10 translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform"></div>
+                <div className="relative bg-black border-2 border-white/40 p-6 flex flex-col items-center gap-4 text-center h-full">
+                  <div className="w-12 h-12 bg-white/10 flex items-center justify-center border-2 border-white/20">
+                    <Share2 className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-black uppercase tracking-tighter italic">Personal URL</h3>
+                    <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-relaxed">
+                      Get your own <br />unique URL.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* How It Works Section - Creative Brutalist Version */}
+            <div className="w-full mt-48 space-y-24 relative">
+              <div className="space-y-4 text-center">
+                <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none">
+                  Unify in <span className="text-primary">Seconds</span>
+                </h2>
+                <div className="flex items-center justify-center gap-4">
+                  <div className="h-[2px] w-12 bg-white/20"></div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40 italic">The Developer's Workflow</p>
+                  <div className="h-[2px] w-12 bg-white/20"></div>
+                </div>
+              </div>
+
+              <div className="relative space-y-32 md:space-y-48">
+                {/* Vertical Connector Line (Desktop) */}
+                <div className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-white/20 to-transparent hidden md:block -translate-x-1/2"></div>
+
+                {[
+                  { step: "01", title: "Login", desc: "Sync your identity via Google. No passwords, no friction. Just code." },
+                  { step: "02", title: "Build", desc: "Drop your GitHub repos, technical blogs, and side projects into one list." },
+                  { step: "03", title: "Show", desc: "Deploy your presence. One link for your resume, bio, and the world." },
+                ].map((item, i) => (
+                  <div key={i} className={`flex flex-col ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} items-center gap-12 md:gap-24 relative`}>
+                    {/* Step Number Background */}
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[12rem] md:text-[18rem] font-black italic text-white/[0.03] pointer-events-none select-none z-0">
+                      {item.step}
+                    </div>
+
+                    <div className={`flex-1 w-full ${i % 2 === 0 ? "md:text-right" : "md:text-left"} z-10`}>
+                      <h4 className="text-4xl md:text-6xl font-black uppercase tracking-tighter italic mb-4 group-hover:text-primary transition-colors">
+                        {item.title}
+                      </h4>
+                    </div>
+
+                    {/* Desktop Center Point */}
+                    <div className="relative z-20 hidden md:flex items-center justify-center w-12 h-12 bg-black border-4 border-white">
+                       <div className="w-2 h-2 bg-primary animate-pulse"></div>
+                    </div>
+
+                    <div className={`flex-1 w-full ${i % 2 === 0 ? "md:text-left" : "md:text-right"} z-10`}>
+                      <p className="text-lg font-medium text-white/60 leading-snug max-w-xs mx-auto md:mx-0 break-keep">
+                        {item.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Use Cases Section */}
+            <div className="w-full mt-48 space-y-8 overflow-hidden">
+               <div className="flex items-center gap-4 opacity-40">
+                  <div className="h-[2px] flex-1 bg-white"></div>
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] whitespace-nowrap">Perfect for Developers</span>
+                  <div className="h-[2px] flex-1 bg-white"></div>
+               </div>
+               
+               <div className="flex flex-wrap justify-center gap-3 md:gap-4 max-w-4xl mx-auto">
+                 {["Portfolio", "Tech Blog", "GitHub Projects", "Résumé", "LinkedIn", "Open Source", "Side Projects", "Socials"].map((tag, i) => (
+                   <div key={i} className="px-5 py-2 border-2 border-white/40 rounded-full text-sm font-black uppercase tracking-tighter italic hover:bg-white hover:text-black transition-all cursor-default">
+                     {tag}
+                   </div>
+                 ))}
+               </div>
+            </div>
+
+            {/* Bottom CTA */}
+            <div className="w-full mt-48 pb-24 space-y-12 text-center">
+               <h2 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-none italic">
+                 READY TO <br />
+                 <span className="text-primary">SHOW?</span>
+               </h2>
+               <div className="flex flex-col items-center gap-6">
+                 <p className="text-lg font-bold text-white/60 uppercase tracking-widest">Join 1,000+ developers today.</p>
+                 <Button 
+                  size="lg" 
+                  onClick={login}
+                  className="w-full sm:w-auto min-w-[320px] bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-16 text-xl font-black tracking-tighter cursor-pointer group shadow-[8px_8px_0px_rgba(255,255,255,0.1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all"
+                >
+                  START FOR FREE
+                </Button>
+               </div>
+            </div>
+        </div>
+
+        <footer className="relative z-10 py-8 text-center border-t border-white/10 opacity-60 mt-auto">
+          <p className="text-[10px] font-black tracking-[0.3em] uppercase">Powered by MyLink &copy; 2026</p>
         </footer>
       </div>
     );
