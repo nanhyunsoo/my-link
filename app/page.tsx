@@ -156,9 +156,9 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
                   setIsEditing(false);
                   reset();
                 }}
-                className="flex-1 border-2 border-white rounded-none h-10 font-black uppercase tracking-tighter hover:bg-white hover:text-black"
+                className="flex-1 border-2 border-white text-white rounded-none h-10 font-black uppercase tracking-tighter hover:bg-white hover:text-black transition-colors"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4 mr-2" />
                 취소
               </Button>
             </div>
@@ -535,123 +535,125 @@ export default function Page() {
           
           <div className="space-y-2 relative w-full">
             <div className="relative flex items-center justify-center min-h-[4rem]">
-              <h1 className="text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none truncate max-w-[80%] mx-auto">
-                {profile?.name || "Username"}
-              </h1>
-              <div className="absolute left-[calc(50%+min(40%,250px))] md:left-[calc(50%+min(40%,300px))]">
-                <Dialog open={isProfileDialogOpen} onOpenChange={setIsProfileDialogOpen}>
-                  <DialogTrigger
-                    render={
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="w-10 h-10 text-white hover:text-white hover:bg-white/10 rounded-none transition-all"
-                      >
-                        <Edit2 className="w-5 h-5" />
-                      </Button>
-                    }
-                  />
-                  <DialogContent className="bg-[#0D0D0D] border-2 border-white rounded-none text-white sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle className="text-3xl font-black uppercase tracking-tighter italic">Edit Profile</DialogTitle>
-                    </DialogHeader>
-                    <form onSubmit={handleProfileSubmit(onProfileSubmit)} className="space-y-6 py-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="profile-name" className="text-sm font-bold uppercase tracking-widest text-white/60">Display Name</Label>
-                        <div className="relative">
-                          <Input
-                            id="profile-name"
-                            placeholder="Your Display Name"
-                            className={`bg-black border-2 rounded-none h-12 text-lg font-bold transition-colors ${
-                              profileErrors.name || nameError ? "border-destructive" : "border-white/20 focus:border-white"
-                            }`}
-                            {...registerProfile("name")}
-                          />
-                          {isCheckingName && (
-                            <div className="absolute right-3 top-3">
-                              <Loader2 className="w-6 h-6 animate-spin text-white/30" />
-                            </div>
+              <div className="relative">
+                <h1 className="text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none truncate max-w-[80vw] sm:max-w-[450px]">
+                  {profile?.name || "Username"}
+                </h1>
+                <div className="absolute top-1/2 -translate-y-1/2 -right-12">
+                  <Dialog open={isProfileDialogOpen} onOpenChange={setIsProfileDialogOpen}>
+                    <DialogTrigger
+                      render={
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="w-10 h-10 text-white hover:text-white hover:bg-white/10 rounded-none transition-all"
+                        >
+                          <Edit2 className="w-5 h-5" />
+                        </Button>
+                      }
+                    />
+                    <DialogContent className="bg-[#0D0D0D] border-2 border-white rounded-none text-white sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle className="text-3xl font-black uppercase tracking-tighter italic">Edit Profile</DialogTitle>
+                      </DialogHeader>
+                      <form onSubmit={handleProfileSubmit(onProfileSubmit)} className="space-y-6 py-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="profile-name" className="text-sm font-bold uppercase tracking-widest text-white/60">Display Name</Label>
+                          <div className="relative">
+                            <Input
+                              id="profile-name"
+                              placeholder="Your Display Name"
+                              className={`bg-black border-2 rounded-none h-12 text-lg font-bold transition-colors ${
+                                profileErrors.name || nameError ? "border-destructive" : "border-white/20 focus:border-white"
+                              }`}
+                              {...registerProfile("name")}
+                            />
+                            {isCheckingName && (
+                              <div className="absolute right-3 top-3">
+                                <Loader2 className="w-6 h-6 animate-spin text-white/30" />
+                              </div>
+                            )}
+                          </div>
+                          {(profileErrors.name || nameError) && (
+                            <p className="text-destructive text-xs font-bold uppercase tracking-tight">
+                              {profileErrors.name?.message || nameError}
+                            </p>
                           )}
                         </div>
-                        {(profileErrors.name || nameError) && (
-                          <p className="text-destructive text-xs font-bold uppercase tracking-tight">
-                            {profileErrors.name?.message || nameError}
-                          </p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="profile-id" className="text-sm font-bold uppercase tracking-widest text-white/60">User ID</Label>
-                        <div className="relative">
-                          <span className="absolute left-3 top-3 text-lg font-bold text-white/30">@</span>
-                          <Input
-                            id="profile-id"
-                            placeholder="username"
-                            className={`bg-black border-2 rounded-none h-12 pl-8 text-lg font-bold transition-colors ${
-                              profileErrors.id || idError ? "border-destructive" : "border-white/20 focus:border-white"
-                            }`}
-                            {...registerProfile("id")}
-                          />
-                          {isCheckingId && (
-                            <div className="absolute right-3 top-3">
-                              <Loader2 className="w-6 h-6 animate-spin text-white/30" />
-                            </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="profile-id" className="text-sm font-bold uppercase tracking-widest text-white/60">User ID</Label>
+                          <div className="relative">
+                            <span className="absolute left-3 top-3 text-lg font-bold text-white/30">@</span>
+                            <Input
+                              id="profile-id"
+                              placeholder="username"
+                              className={`bg-black border-2 rounded-none h-12 pl-8 text-lg font-bold transition-colors ${
+                                profileErrors.id || idError ? "border-destructive" : "border-white/20 focus:border-white"
+                              }`}
+                              {...registerProfile("id")}
+                            />
+                            {isCheckingId && (
+                              <div className="absolute right-3 top-3">
+                                <Loader2 className="w-6 h-6 animate-spin text-white/30" />
+                              </div>
+                            )}
+                          </div>
+                          {(profileErrors.id || idError) && (
+                            <p className="text-destructive text-xs font-bold uppercase tracking-tight">
+                              {profileErrors.id?.message || idError}
+                            </p>
                           )}
                         </div>
-                        {(profileErrors.id || idError) && (
-                          <p className="text-destructive text-xs font-bold uppercase tracking-tight">
-                            {profileErrors.id?.message || idError}
-                          </p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="bio" className="text-sm font-bold uppercase tracking-widest text-white/60">Bio</Label>
-                        <textarea
-                          id="bio"
-                          placeholder="Tell us about yourself"
-                          rows={3}
-                          className={`w-full bg-black border-2 border-white/20 focus:border-white rounded-none p-3 text-lg font-bold transition-colors outline-none resize-none ${
-                            profileErrors.bio ? "border-destructive" : ""
-                          }`}
-                          {...registerProfile("bio")}
-                        />
-                        {profileErrors.bio && (
-                          <p className="text-destructive text-xs font-bold uppercase tracking-tight">{profileErrors.bio.message}</p>
-                        )}
-                      </div>
-                      <div className="mt-6 flex gap-2">
-                        <Button 
-                          type="submit" 
-                          disabled={isSubmitting}
-                          className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-12 font-black uppercase tracking-tighter"
-                        >
-                          {isSubmitting ? (
-                            <div className="flex items-center justify-center">
-                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                              저장 중...
-                            </div>
-                          ) : (
-                            <>
-                              <Check className="w-4 h-4 mr-2" />
-                              저장
-                            </>
+                        <div className="space-y-2">
+                          <Label htmlFor="bio" className="text-sm font-bold uppercase tracking-widest text-white/60">Bio</Label>
+                          <textarea
+                            id="bio"
+                            placeholder="Tell us about yourself"
+                            rows={3}
+                            className={`w-full bg-black border-2 border-white/20 focus:border-white rounded-none p-3 text-lg font-bold transition-colors outline-none resize-none ${
+                              profileErrors.bio ? "border-destructive" : ""
+                            }`}
+                            {...registerProfile("bio")}
+                          />
+                          {profileErrors.bio && (
+                            <p className="text-destructive text-xs font-bold uppercase tracking-tight">{profileErrors.bio.message}</p>
                           )}
-                        </Button>
-                        <Button 
-                          type="button" 
-                          variant="outline"
-                          onClick={() => {
-                            setIsProfileDialogOpen(false);
-                            resetProfile();
-                          }}
-                          className="flex-1 border-2 border-white text-white hover:bg-white hover:text-black rounded-none h-12 font-black uppercase tracking-tighter transition-all"
-                        >
-                          <X className="w-4 h-4 mr-2" />
-                          취소
-                        </Button>
-                      </div>
-                    </form>
-                  </DialogContent>
-                </Dialog>
+                        </div>
+                        <div className="mt-6 flex gap-2">
+                          <Button 
+                            type="submit" 
+                            disabled={isSubmitting}
+                            className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-12 font-black uppercase tracking-tighter"
+                          >
+                            {isSubmitting ? (
+                              <div className="flex items-center justify-center">
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                저장 중...
+                              </div>
+                            ) : (
+                              <>
+                                <Check className="w-4 h-4 mr-2" />
+                                저장
+                              </>
+                            )}
+                          </Button>
+                          <Button 
+                            type="button" 
+                            variant="outline"
+                            onClick={() => {
+                              setIsProfileDialogOpen(false);
+                              resetProfile();
+                            }}
+                            className="flex-1 border-2 border-white text-white hover:bg-white hover:text-black rounded-none h-12 font-black uppercase tracking-tighter transition-all"
+                          >
+                            <X className="w-4 h-4 mr-2" />
+                            취소
+                          </Button>
+                        </div>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </div>
             </div>
             <div className="flex items-center justify-center gap-2 text-white/60 font-mono text-sm tracking-widest uppercase">
