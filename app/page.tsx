@@ -694,28 +694,35 @@ export default function Page() {
                         <p className="text-destructive text-xs font-bold uppercase tracking-tight">{profileErrors.bio.message}</p>
                       )}
                     </div>
-                    <div className="mt-6 flex gap-3">
-                      <Button 
-                        type="button" 
-                        variant="outline"
-                        onClick={() => setIsProfileDialogOpen(false)}
-                        className="flex-1 border-2 border-white text-white hover:bg-white hover:text-black rounded-none h-14 text-xl font-black uppercase tracking-tighter transition-all"
-                      >
-                        Cancel
-                      </Button>
+                    <div className="mt-6 flex gap-2">
                       <Button 
                         type="submit" 
                         disabled={isSubmitting}
-                        className="flex-1 bg-white text-black hover:bg-white/90 border-0 rounded-none h-14 text-xl font-black uppercase tracking-tighter transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                        className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-12 font-black uppercase tracking-tighter"
                       >
                         {isSubmitting ? (
                           <div className="flex items-center justify-center">
-                            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                            Saving...
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            저장 중...
                           </div>
                         ) : (
-                          "Save"
+                          <>
+                            <Check className="w-4 h-4 mr-2" />
+                            저장
+                          </>
                         )}
+                      </Button>
+                      <Button 
+                        type="button" 
+                        variant="outline"
+                        onClick={() => {
+                          setIsProfileDialogOpen(false);
+                          resetProfile();
+                        }}
+                        className="flex-1 border-2 border-white text-white hover:bg-white hover:text-black rounded-none h-12 font-black uppercase tracking-tighter transition-all"
+                      >
+                        <X className="w-4 h-4 mr-2" />
+                        취소
                       </Button>
                     </div>
                   </form>
