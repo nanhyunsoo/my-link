@@ -22,8 +22,7 @@ export default function Image() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          border: "24px solid white",
-          padding: "40px",
+          padding: "60px",
         }}
       >
         <div
@@ -32,67 +31,82 @@ export default function Image() {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            border: "8px solid white",
-            padding: "60px 80px",
-            backgroundColor: "black",
-            position: "relative",
+            textAlign: "center",
+            width: "100%",
           }}
         >
-          {/* Offset Shadow effect */}
-          <div 
-            style={{
-              position: "absolute",
-              top: "20px",
-              left: "20px",
-              right: "-20px",
-              bottom: "-20px",
-              backgroundColor: "rgba(255, 255, 255, 0.15)",
-              zIndex: -1,
-            }}
-          />
-          
           <h1
             style={{
-              fontSize: "120px",
+              fontSize: "130px",
               fontWeight: 900,
               color: "white",
               margin: 0,
-              lineHeight: 1,
+              lineHeight: 0.9,
               letterSpacing: "-0.05em",
               textTransform: "uppercase",
-              fontStyle: "italic",
             }}
           >
-            MyLink
+            DEVELOPMENT
           </h1>
-          <p
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "10px" }}>
+            <span
+              style={{
+                fontSize: "130px",
+                fontWeight: 900,
+                color: "white",
+                marginRight: "20px",
+                textTransform: "uppercase",
+              }}
+            >
+              IN
+            </span>
+            <span
+              style={{
+                fontSize: "130px",
+                fontWeight: 900,
+                color: "white",
+                backgroundColor: "#2563EB", // Standard primary blue
+                padding: "0 20px",
+                fontStyle: "italic",
+                textTransform: "uppercase",
+              }}
+            >
+              ONE LINK.
+            </span>
+          </div>
+          
+          <div
             style={{
-              fontSize: "32px",
-              fontWeight: 700,
-              color: "rgba(255, 255, 255, 0.7)",
-              margin: "24px 0 0 0",
-              letterSpacing: "0.3em",
-              textTransform: "uppercase",
+              marginTop: "60px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "10px",
             }}
           >
-            Development in One Link
-          </p>
-        </div>
-        
-        <div 
-          style={{
-            position: "absolute",
-            bottom: "60px",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
-          <div style={{ width: "40px", height: "2px", backgroundColor: "white" }} />
-          <span style={{ color: "white", fontSize: "16px", fontWeight: 900, letterSpacing: "0.4em", textTransform: "uppercase" }}>
-            The Developer's Link Page
-          </span>
-          <div style={{ width: "40px", height: "2px", backgroundColor: "white" }} />
+            <p
+              style={{
+                fontSize: "32px",
+                fontWeight: 500,
+                color: "rgba(255, 255, 255, 0.8)",
+                margin: 0,
+                letterSpacing: "0.02em",
+              }}
+            >
+              GitHub, Blog, Portfolio.
+            </p>
+            <p
+              style={{
+                fontSize: "32px",
+                fontWeight: 500,
+                color: "rgba(255, 255, 255, 0.8)",
+                margin: 0,
+                letterSpacing: "0.02em",
+              }}
+            >
+              All links for developers in a single page.
+            </p>
+          </div>
         </div>
       </div>
     ),

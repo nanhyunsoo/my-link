@@ -40,8 +40,7 @@ export default async function Image({ params }: Props) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          border: "24px solid white",
-          padding: "40px",
+          padding: "60px",
         }}
       >
         <div
@@ -50,78 +49,73 @@ export default async function Image({ params }: Props) {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            border: "8px solid white",
-            padding: "60px 80px",
-            backgroundColor: "black",
-            position: "relative",
+            textAlign: "center",
+            width: "100%",
           }}
         >
-          {/* Offset Shadow effect */}
-          <div 
-            style={{
-              position: "absolute",
-              top: "20px",
-              left: "20px",
-              right: "-20px",
-              bottom: "-20px",
-              backgroundColor: "rgba(255, 255, 255, 0.15)",
-              zIndex: -1,
-            }}
-          />
-          
           <h1
             style={{
-              fontSize: "80px",
+              fontSize: "100px",
               fontWeight: 900,
               color: "white",
               margin: 0,
-              lineHeight: 1.1,
+              lineHeight: 1,
               letterSpacing: "-0.05em",
-              textAlign: "center",
-              fontStyle: "italic",
               textTransform: "uppercase",
             }}
           >
-            {displayName} on <br />
-            <span style={{ color: "#FFFFFF", background: "rgba(255,255,255,0.1)", padding: "0 10px" }}>MyLink</span>
+            {displayName}&apos;S
           </h1>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "10px" }}>
+            <span
+              style={{
+                fontSize: "100px",
+                fontWeight: 900,
+                color: "white",
+                backgroundColor: "#2563EB", // Standard primary blue
+                padding: "0 20px",
+                fontStyle: "italic",
+                textTransform: "uppercase",
+              }}
+            >
+              IDENTITY.
+            </span>
+          </div>
           
           <div
             style={{
-              marginTop: "48px",
-              padding: "14px 28px",
-              backgroundColor: "white",
+              marginTop: "60px",
               display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "10px",
             }}
           >
-            <span
+            <p
               style={{
-                fontSize: "28px",
+                fontSize: "36px",
                 fontWeight: 900,
-                color: "black",
-                letterSpacing: "0.15em",
+                color: "white",
+                margin: 0,
+                letterSpacing: "0.1em",
                 textTransform: "uppercase",
               }}
             >
               mylink.com/@{userId}
-            </span>
+            </p>
+            <p
+              style={{
+                fontSize: "24px",
+                fontWeight: 500,
+                color: "rgba(255, 255, 255, 0.6)",
+                margin: 0,
+                letterSpacing: "0.02em",
+                fontStyle: "italic",
+              }}
+            >
+              The developer&apos;s link page.
+            </p>
           </div>
-        </div>
-
-        <div 
-          style={{
-            position: "absolute",
-            bottom: "60px",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
-          <div style={{ width: "40px", height: "2px", backgroundColor: "white" }} />
-          <span style={{ color: "white", fontSize: "16px", fontWeight: 900, letterSpacing: "0.4em", textTransform: "uppercase" }}>
-            The Developer's Identity
-          </span>
-          <div style={{ width: "40px", height: "2px", backgroundColor: "white" }} />
         </div>
       </div>
     ),
