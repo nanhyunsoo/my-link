@@ -24,11 +24,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: userData.profile.bio,
       type: "profile",
       username: userData.profile.id,
+      images: [
+        {
+          url: `/${username}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: `${userData.profile.name}'s MyLink`,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: `${userData.profile.name} (@${userData.profile.id}) | MyLink`,
       description: userData.profile.bio,
+      images: [`/${username}/opengraph-image`],
     },
   };
 }
