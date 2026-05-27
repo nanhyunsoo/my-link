@@ -466,11 +466,10 @@ export default function Page() {
           {/* Spacer for vertical centering logic */}
           <div className="flex-1 flex flex-col items-center justify-center w-full min-h-0">
             <div className="space-y-10 md:space-y-12 max-w-4xl w-full flex flex-col items-center">
-              <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[9rem] font-black tracking-tighter leading-[0.9] uppercase break-keep">
+              <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[9rem] font-black tracking-tighter leading-[1.1] md:leading-[1.05] uppercase break-keep">
                 Development <br />
-                in <span className="text-white bg-primary px-3 italic text-nowrap">One Link.</span>
-              </h1>
-              
+                in <span className="inline-block text-white bg-primary px-3 py-1 italic text-nowrap mt-4 md:mt-6">One Link.</span>
+              </h1>              
               <p className="text-lg md:text-xl lg:text-2xl font-medium text-white/80 leading-relaxed max-w-xl mx-auto break-keep">
                 GitHub, Blog, Portfolio.<br />
                 All links for developers<br />
