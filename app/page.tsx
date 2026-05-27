@@ -502,18 +502,18 @@ export default function Page() {
         </main>
 
         {/* Content Sections */}
-        <div className="relative z-10 max-w-5xl mx-auto w-full px-6 flex flex-col items-center pb-32">
+        <div className="relative z-10 max-w-6xl mx-auto w-full px-6 flex flex-col items-center pb-32">
             {/* Feature Cards Section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mt-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 w-full mt-24">
               <div className="group relative h-full">
-                <div className="absolute inset-0 bg-white/10 translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform"></div>
-                <div className="relative bg-black border-2 border-white/40 p-6 flex flex-col items-center gap-4 text-center h-full">
-                  <div className="w-12 h-12 bg-white/10 flex items-center justify-center border-2 border-white/20">
-                    <Plus className="w-6 h-6 text-white" />
+                <div className="absolute inset-0 bg-white/10 translate-x-3 translate-y-3 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-300"></div>
+                <div className="relative bg-black border-2 border-white/40 p-10 flex flex-col items-center gap-6 text-center h-full">
+                  <div className="w-16 h-16 bg-white/10 flex items-center justify-center border-2 border-white/20">
+                    <Plus className="w-8 h-8 text-white" />
                   </div>
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-black uppercase tracking-tighter italic">Link Management</h3>
-                    <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-relaxed">
+                  <div className="space-y-4">
+                    <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter italic leading-none">Link Management</h3>
+                    <p className="text-xs md:text-sm font-bold text-white/60 uppercase tracking-widest leading-relaxed">
                       Manage all links <br />in one place.
                     </p>
                   </div>
@@ -521,14 +521,14 @@ export default function Page() {
               </div>
 
               <div className="group relative h-full">
-                <div className="absolute inset-0 bg-primary/20 translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform"></div>
-                <div className="relative bg-black border-2 border-primary/40 p-6 flex flex-col items-center gap-4 text-center h-full">
-                  <div className="w-12 h-12 bg-primary/10 flex items-center justify-center border-2 border-primary/20">
-                    <BarChart3 className="w-6 h-6 text-primary" />
+                <div className="absolute inset-0 bg-primary/20 translate-x-3 translate-y-3 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-300"></div>
+                <div className="relative bg-black border-2 border-primary/40 p-10 flex flex-col items-center gap-6 text-center h-full">
+                  <div className="w-16 h-16 bg-primary/10 flex items-center justify-center border-2 border-primary/20">
+                    <BarChart3 className="w-8 h-8 text-primary" />
                   </div>
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-black uppercase tracking-tighter italic text-primary">Click Stats</h3>
-                    <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-relaxed">
+                  <div className="space-y-4">
+                    <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter italic text-primary leading-none">Click Stats</h3>
+                    <p className="text-xs md:text-sm font-bold text-white/60 uppercase tracking-widest leading-relaxed">
                       Real-time click <br />analytics.
                     </p>
                   </div>
@@ -536,14 +536,14 @@ export default function Page() {
               </div>
 
               <div className="group relative h-full">
-                <div className="absolute inset-0 bg-white/10 translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform"></div>
-                <div className="relative bg-black border-2 border-white/40 p-6 flex flex-col items-center gap-4 text-center h-full">
-                  <div className="w-12 h-12 bg-white/10 flex items-center justify-center border-2 border-white/20">
-                    <Share2 className="w-6 h-6 text-white" />
+                <div className="absolute inset-0 bg-white/10 translate-x-3 translate-y-3 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-300"></div>
+                <div className="relative bg-black border-2 border-white/40 p-10 flex flex-col items-center gap-6 text-center h-full">
+                  <div className="w-16 h-16 bg-white/10 flex items-center justify-center border-2 border-white/20">
+                    <Share2 className="w-8 h-8 text-white" />
                   </div>
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-black uppercase tracking-tighter italic">Personal URL</h3>
-                    <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-relaxed">
+                  <div className="space-y-4">
+                    <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter italic leading-none">Personal URL</h3>
+                    <p className="text-xs md:text-sm font-bold text-white/60 uppercase tracking-widest leading-relaxed">
                       Get your own <br />unique URL.
                     </p>
                   </div>
