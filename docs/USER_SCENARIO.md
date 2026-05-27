@@ -1,58 +1,58 @@
-# [USER SCENARIO] 마이링크 (MyLink) 사용자 시나리오
+# [USER SCENARIO] MyLink User Scenario
 
-본 문서는 마이링크 서비스의 두 가지 주요 핵심 사용자(방문자, 소유자)의 정상적인 행동 흐름(Happy Path)과 예외 상황(Edge Case)을 모두 포함하여 정의합니다. 모든 수정 행위는 **인라인 편집(Inline Editing)**을 기준으로 작성되었습니다.
-
----
-
-## 1. 방문자 (Visitor) 시나리오
-
-### 1.1 정상 접속 및 프로필 확인
-- **사용자는** 특정 크리에이터나 개발자의 통합된 정보를 확인**하기 위해** 브라우저 주소창에 공유받은 URL(`my-link.com/displayName`)을 입력**한다.**
-- **사용자는** 해당 페이지 접속 시, 화면 상단에서 소유자의 구글 프로필 이미지, 실제 이름(userName), 닉네임(displayName), 그리고 소개글(Bio)을 한눈에 확인**한다.**
-
-### 1.2 링크 탐색 및 이동
-- **사용자는** 소유자가 공유한 다양한 온라인 채널(블로그, 포트폴리오, SNS 등)을 탐색**하기 위해** 화면에 나열된 링크 리스트를 스크롤**한다.**
-- **사용자는** 각 링크 항목 좌측에 자동으로 표시된 파비콘(Favicon)을 통해 해당 링크가 어떤 서비스(예: GitHub, Velog, Instagram 등)로 연결되는지 시각적으로 인지**한다.**
-- **사용자는** 관심 있는 항목의 세부 내용을 확인**하기 위해** 특정 링크 블록을 클릭**한다.** (클릭 시 새 탭으로 해당 URL이 열림)
-
-### 1.3 [예외] 잘못된 주소 접속 (404 Error)
-- **사용자는** 존재하지 않거나 오타가 있는 마이링크 주소로 접속했을 때 올바른 주소인지 다시 확인**하기 위해** '페이지를 찾을 수 없습니다(404)' 에러 화면과 메인 홈으로 돌아가는 안내 버튼을 확인**한다.**
-
-### 1.4 [예외] 링크가 없는 프로필 방문
-- **사용자는** 소유자가 가입만 하고 아직 링크를 하나도 추가하지 않은 페이지에 방문했을 때 현재 상태를 인지**하기 위해** '아직 등록된 링크가 없습니다'라는 빈 상태(Empty State) 안내 문구를 확인**한다.**
+This document defines the normal behavioral flow (Happy Path) and exception situations (Edge Cases) for the two main core users of the MyLink service: the Visitor and the Owner. All modification actions are written based on **Inline Editing**.
 
 ---
 
-## 2. 소유자 (Owner) 시나리오 (Admin)
+## 1. Visitor Scenario
 
-### 2.1 로그인 및 초기 설정
-- **사용자는** 자신의 마이링크 페이지를 생성하거나 관리**하기 위해** 메인 화면에서 'Google로 로그인' 버튼을 클릭**한다.**
-- **사용자는** 최초 로그인 시 자신의 구글 계정 이메일 앞부분이 디스플레이 네임(URL 슬러그)으로 자동 지정되고, 프로필 사진이 적용된 관리자(Admin) 화면을 확인**한다.**
+### 1.1 Normal Access and Profile Verification
+- **The user** enters the shared URL (`my-link.com/displayName`) in the browser address bar **to check** the integrated information of a specific creator or developer.
+- **The user** sees the owner's Google profile image, real name (userName), nickname (displayName), and introduction (Bio) at the top of the screen upon accessing the page.
 
-### 2.2 [추가] 내 프로필 링크 공유 (클립보드 복사)
-- **사용자는** 완성된 자신의 마이링크를 인스타그램, 이력서 등 외부 채널에 공유**하기 위해** 화면 상단의 '내 링크 복사' 아이콘(또는 버튼)을 클릭하여 클립보드에 자신의 고유 주소(`my-link.com/displayName`)를 복사**한다.**
+### 1.2 Link Navigation and Redirection
+- **The user** scrolls through the link list displayed on the screen **to explore** various online channels (blog, portfolio, SNS, etc.) shared by the owner.
+- **The user** visually perceives which service (e.g., GitHub, Velog, Instagram, etc.) each link item connects to through the favicon automatically displayed on the left of each link item.
+- **The user** clicks a specific link block **to check** the detailed content of an item of interest. (Clicking opens the corresponding URL in a new tab)
 
-### 2.3 프로필 정보 인라인 수정
-- **사용자는** 방문자에게 보여질 자신의 닉네임(URL 주소)을 변경**하기 위해** 화면에 표시된 디스플레이 네임 텍스트를 클릭하여 인라인 활성화 상태로 만든 후, 원하는 영문/숫자 조합으로 타이핑하고 엔터(또는 외부 영역 클릭)를 쳐서 저장**한다.**
-- **사용자는** 실제 이름(userName)이나 소개글(Bio)을 업데이트**하기 위해** 해당 텍스트 영역을 클릭하여 인라인 수정 후 즉시 저장**한다.**
+### 1.3 [Exception] Accessing an Invalid Address (404 Error)
+- **The user** sees a 'Page Not Found (404)' error screen and a guidance button to return to the main home **to verify** if the address is correct when accessing a non-existent or misspelled MyLink address.
 
-### 2.4 [예외] URL(디스플레이 네임) 중복 및 유효성 검사
-- **사용자는** 자신만의 고유한 URL을 갖기 위해 닉네임(displayName)을 수정하고 엔터를 쳤을 때, 다른 사람이 이미 사용 중이거나 특수문자 등 허용되지 않은 형식일 경우 이를 수정**하기 위해** '이미 사용 중인 주소입니다' 또는 '유효하지 않은 형식입니다'라는 경고 메시지를 확인하고 원복된 상태에서 다시 시도**한다.**
+### 1.4 [Exception] Visiting a Profile with No Links
+- **The user** sees an 'Empty State' guidance message stating 'No links registered yet' **to perceive** the current state when visiting a page where the owner has only signed up but hasn't added any links yet.
 
-### 2.5 링크 추가
-- **사용자는** 새로운 포트폴리오나 SNS 주소를 자신의 페이지에 등록**하기 위해** 화면의 '새 링크 추가' 버튼을 클릭**한다.**
-- **사용자는** 빈 링크 블록이 리스트 최상단(또는 최하단)에 나타나면, 제목(Title)과 URL 필드를 클릭하여 각각의 정보를 입력하고 저장**한다.** 
-- **사용자는** URL 입력이 완료되는 즉시 시스템이 구글 API를 통해 해당 URL의 파비콘을 자동으로 불러와 링크 블록 옆에 적용하는 것을 확인**한다.**
+---
 
-### 2.6 링크 인라인 수정 및 유효성 검사
-- **사용자는** 기존에 등록했던 링크의 제목이나 주소를 수정**하기 위해** 해당 링크 블록의 텍스트를 직접 클릭**한다.**
-- **사용자는** 텍스트가 입력 필드로 전환되면 내용을 수정하고 엔터를 눌러 페이지 이동 없이 즉시 변경사항을 반영**한다.** (URL이 변경되면 파비콘도 자동으로 갱신됨)
-- **[예외] 사용자는** 실수로 잘못된 웹사이트 주소 형식(예: `htt://...`)을 입력했을 경우 올바른 주소를 입력**하기 위해** '유효하지 않은 URL 형식입니다'라는 경고를 확인**한다.**
-- **[예외] 사용자는** 제목이나 URL을 실수로 모두 지우고 빈칸으로 저장하는 것을 방지**하기 위해**, 빈 상태로 엔터를 치면 '필수 입력 항목입니다'라는 경고를 보거나 이전 텍스트로 자동 원복되는 것을 확인**한다.**
+## 2. Owner Scenario (Admin)
 
-### 2.7 링크 삭제
-- **사용자는** 더 이상 유효하지 않거나 공개하고 싶지 않은 링크를 제거**하기 위해** 해당 링크 블록 우측의 '삭제' 아이콘을 클릭**한다.**
-- **사용자는** 의도치 않은 삭제를 방지**하기 위해** 나타난 확인 모달에서 '삭제'를 최종 승인하여 리스트에서 해당 블록을 완전히 제거**한다.**
+### 2.1 Login and Initial Setup
+- **The user** clicks the 'Sign in with Google' button on the main screen **to create or manage** their MyLink page.
+- **The user** sees an Admin screen where the local part of their Google account email is automatically designated as the displayName (URL slug) and their profile picture is applied upon their first login.
 
-### 2.8 로그아웃
-- **사용자는** 공용 기기 등에서 자신의 관리자 계정을 안전하게 보호**하기 위해** 화면 구석의 '로그아웃' 버튼을 클릭하여 세션을 종료하고 메인 홈으로 이동**한다.**
+### 2.2 [Addition] Sharing My Profile Link (Clipboard Copy)
+- **The user** copies their unique address (`my-link.com/displayName`) to the clipboard by clicking the 'Copy My Link' icon (or button) at the top of the screen **to share** their completed MyLink on external channels such as Instagram or a resume.
+
+### 2.3 Inline Modification of Profile Information
+- **The user** clicks the displayed displayName text to make it inlined, then types the desired alphanumeric combination and presses Enter (or clicks outside) to save **to change** their nickname (URL address) to be shown to visitors.
+- **The user** clicks the corresponding text area to modify it inline and save it immediately **to update** their real name (userName) or introduction (Bio).
+
+### 2.4 [Exception] URL (displayName) Duplication and Validity Check
+- **The user** sees a warning message such as 'This address is already in use' or 'Invalid format' and retries from the reverted state **to correct** it if the nickname (displayName) is already being used by someone else or is in an unallowed format (e.g., special characters) after pressing Enter to have their own unique URL.
+
+### 2.5 Adding a Link
+- **The user** clicks the 'Add New Link' button on the screen **to register** a new portfolio or SNS address on their page.
+- **The user** enters each piece of information by clicking the title and URL fields when an empty link block appears at the top (or bottom) of the list.
+- **The user** verifies that the system automatically fetches the favicon for the URL through the Google API and applies it next to the link block as soon as the URL input is complete.
+
+### 2.6 Inline Modification of Link and Validity Check
+- **The user** directly clicks the text of the corresponding link block **to modify** the title or address of a previously registered link.
+- **The user** reflects the changes immediately without page navigation by modifying the content when the text switches to an input field and pressing Enter. (The favicon is also automatically updated if the URL changes)
+- **[Exception] The user** sees an 'Invalid URL format' warning **to enter** the correct address if they accidentally enter an incorrect website address format (e.g., `htt://...`).
+- **[Exception] The user** sees a 'Required field' warning or the text automatically reverts to the previous one if they press Enter with an empty field **to prevent** accidentally deleting everything and saving it as a blank space.
+
+### 2.7 Deleting a Link
+- **The user** clicks the 'Delete' icon on the right side of the corresponding link block **to remove** a link that is no longer valid or they no longer wish to disclose.
+- **The user** completely removes the block from the list by finally approving 'Delete' in the confirmation modal that appears **to prevent** unintended deletion.
+
+### 2.8 Logout
+- **The user** clicks the 'Logout' button in the corner of the screen to terminate the session and move to the main home **to safely protect** their administrator account on a public device.

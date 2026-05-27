@@ -9,7 +9,8 @@ import {
   updateDoc, 
   deleteDoc, 
   doc, 
-  serverTimestamp 
+  serverTimestamp,
+  increment 
 } from "firebase/firestore";
 import { type Link } from "@/data/links";
 import { toast } from "sonner";
@@ -29,6 +30,7 @@ export function useLinks(userId: string | undefined) {
           title: data.title,
           url: data.url,
           faviconUrl: data.faviconUrl,
+          clicks: data.clicks || 0,
           createdAt: data.createdAt,
           updatedAt: data.updatedAt
         } as Link);
@@ -43,9 +45,10 @@ export function useAddLink() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ userId, link }: { userId: string; link: Omit<Link, "id"> }) => {
+    mutationFn: async ({ userId, link }: { userId: string; link: Omit<Link, "id" | "clicks"> }) => {
       await addDoc(collection(db, `users/${userId}/links`), {
         ...link,
+        clicks: 0,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
@@ -55,7 +58,23 @@ export function useAddLink() {
     },
     onError: (error) => {
       console.error("Error adding link: ", error);
-      toast.error("링크 저장 중 오류가 발생했습니다.");
+      toast.error("An error occurred while saving the link.");
+    },
+  });
+}
+
+export function useIncrementClick() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ userId, linkId }: { userId: string; linkId: string }) => {
+      const linkRef = doc(db, `users/${userId}/links`, linkId);
+      await updateDoc(linkRef, {
+        clicks: increment(1),
+      });
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["links", variables.userId] });
     },
   });
 }
@@ -76,7 +95,7 @@ export function useUpdateLink() {
     },
     onError: (error) => {
       console.error("Error updating link: ", error);
-      toast.error("링크 수정 중 오류가 발생했습니다.");
+      toast.error("An error occurred while updating the link.");
     },
   });
 }
@@ -94,7 +113,7 @@ export function useDeleteLink() {
     },
     onError: (error) => {
       console.error("Error deleting link: ", error);
-      toast.error("링크 삭제 중 오류가 발생했습니다.");
+      toast.error("An error occurred while deleting the link.");
     },
   });
 }

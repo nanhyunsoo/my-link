@@ -37,11 +37,12 @@ This file defines the structure, technology stack, development conventions, and 
 
 ## 5. Development Conventions & Principles
 - **TypeScript First**: All files must be `.ts` or `.tsx` with strict type checking.
+- **Security Rules**: Always update `@firestore.rules` accordingly when the database structure or access patterns change.
 - **App Router Usage**: Prefer Server Components; use `'use client'` only for interactions.
 - **Inline Editing UX**: Implement all edits using inline editing for better UX (see ✎ icon in `@docs/WIREFRAME.md`).
 - **Surgical Updates**: Make precise changes; avoid unnecessary refactoring.
 - **Design System**: Follow ASALDESIGN (Black & White high-contrast minimalism) using Tailwind CSS.
-- **Commit Messages**: Always write Git commit messages in **Korean**.
+- **Commit Messages**: Always write Git commit messages in **English**.
 - **File References**: Use the `@filename` format when referring to files in documentation.
 
 ## 6. Screen Structure & UI Principles (Refer to `@docs/WIREFRAME.md`)

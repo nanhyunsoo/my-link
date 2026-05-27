@@ -23,7 +23,7 @@ export function Header() {
     if (profile) {
       const url = `${window.location.origin}/${profile.id}`;
       navigator.clipboard.writeText(url);
-      toast.success("링크가 클립보드에 복사되었습니다.");
+      toast.success("Link copied to clipboard.");
     }
   };
 

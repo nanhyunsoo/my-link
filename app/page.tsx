@@ -6,7 +6,7 @@ import { db } from "@/lib/firebase";
 import { collection, query, doc, getDocs, where } from "firebase/firestore";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { Share2, ExternalLink, Copy, Plus, Loader2, Edit2, Trash2, Check, X, LogIn } from "lucide-react";
+import { Share2, ExternalLink, Copy, Plus, Loader2, Edit2, Trash2, Check, X, LogIn, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,7 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,12 +22,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/components/auth-provider";
 import { toast } from "sonner";
-import { useProfile, useUpdateProfile, type UserProfile } from "@/hooks/use-profile";
+import { useProfile, useUpdateProfile } from "@/hooks/use-profile";
 import { useLinks, useAddLink, useUpdateLink, useDeleteLink } from "@/hooks/use-links";
 
 const linkSchema = z.object({
-  title: z.string().min(1, "제목을 입력해주세요."),
-  url: z.string().min(1, "URL을 입력해주세요.").refine((val) => {
+  title: z.string().min(1, "Please enter a title."),
+  url: z.string().min(1, "Please enter a URL.").refine((val) => {
     try {
       const urlToTest = val.startsWith("http") ? val : `https://${val}`;
       new URL(urlToTest);
@@ -36,19 +35,19 @@ const linkSchema = z.object({
     } catch {
       return false;
     }
-  }, "올바른 URL 형식이 아닙니다."),
+  }, "Invalid URL format."),
 });
 
 const profileSchema = z.object({
   name: z.string()
-    .min(2, "이름은 2글자 이상이어야 합니다.")
-    .max(20, "이름은 20글자 이하여야 합니다.")
-    .regex(/^[a-zA-Z0-9가-힣\s]+$/, "특수문자는 사용할 수 없습니다."),
+    .min(2, "Name must be at least 2 characters.")
+    .max(20, "Name must be 20 characters or less.")
+    .regex(/^[a-zA-Z0-9\s]+$/, "Special characters are not allowed."),
   id: z.string()
-    .min(3, "아이디는 3글자 이상이어야 합니다.")
-    .max(20, "아이디는 20글자 이하여야 합니다.")
-    .regex(/^[a-zA-Z0-9_]+$/, "아이디는 영문, 숫자, 언더바(_)만 가능합니다."),
-  bio: z.string().max(100, "소개는 100글자 이하여야 합니다."),
+    .min(3, "ID must be at least 3 characters.")
+    .max(20, "ID must be 20 characters or less.")
+    .regex(/^[a-zA-Z0-9_]+$/, "ID can only contain alphanumeric characters and underscores (_)."),
+  bio: z.string().max(100, "Bio must be 100 characters or less."),
 });
 
 type LinkFormValues = z.infer<typeof linkSchema>;
@@ -147,7 +146,7 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
                 className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-10 font-black uppercase tracking-tighter"
               >
                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-                저장
+                SAVE
               </Button>
               <Button 
                 type="button"
@@ -159,7 +158,7 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
                 className="flex-1 border-2 border-white text-white rounded-none h-10 font-black uppercase tracking-tighter hover:bg-white hover:text-black transition-colors"
               >
                 <X className="w-4 h-4 mr-2" />
-                취소
+                CANCEL
               </Button>
             </div>
           </form>
@@ -197,6 +196,12 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
                 <span className="text-xl font-bold uppercase tracking-tight text-white truncate">
                   {link.title}
                 </span>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <BarChart3 className="w-3 h-3 text-white/40" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                    {link.clicks || 0}
+                  </span>
+                </div>
               </div>
               <ExternalLink className="w-4 h-4 text-white/30 group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-all flex-shrink-0" />
             </a>
@@ -232,18 +237,18 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
         <DialogContent className="bg-[#0D0D0D] border-2 border-white rounded-none text-white sm:max-w-[425px] p-6">
           <DialogHeader>
             <DialogTitle className="text-2xl font-black uppercase tracking-tighter italic leading-none mb-4">
-              정말 삭제하시겠습니까?
+              Are you sure?
             </DialogTitle>
           </DialogHeader>
           
           <div className="py-4 space-y-4">
             <div className="space-y-1">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-white/40">삭제할 링크</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/40">Link to delete</p>
               <p className="text-xl font-black uppercase tracking-tight truncate">{link.title}</p>
             </div>
             
             <p className="text-xs font-black uppercase tracking-widest text-red-400">
-              이 작업은 되돌릴 수 없습니다.
+              This action cannot be undone.
             </p>
           </div>
 
@@ -253,7 +258,7 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
               onClick={() => setIsDeleteDialogOpen(false)}
               className="w-full sm:w-1/2 bg-white text-black hover:bg-white/90 border-0 rounded-none h-11 font-black uppercase tracking-tighter transition-colors outline-none cursor-pointer"
             >
-              취소
+              CANCEL
             </button>
             <button
               type="button"
@@ -264,10 +269,10 @@ function LinkItem({ link, userId }: { link: Link; userId: string }) {
               {isSubmitting ? (
                 <div className="flex items-center justify-center">
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  삭제 중...
+                  DELETING...
                 </div>
               ) : (
-                "삭제하기"
+                "DELETE"
               )}
             </button>
           </div>
@@ -285,7 +290,7 @@ export default function Page() {
   
   // Queries
   const { data: profile, isLoading: profileLoading } = useProfile(user);
-  const { data: links = [], isLoading: linksLoading } = useLinks(user?.uid);
+  const { data: links = [] } = useLinks(user?.uid);
   
   // Mutations
   const addLink = useAddLink();
@@ -329,7 +334,7 @@ export default function Page() {
         const querySnapshot = await getDocs(q);
         
         if (!querySnapshot.empty) {
-          setNameError("이미 사용 중인 이름입니다.");
+          setNameError("This name is already in use.");
         } else {
           setNameError(null);
         }
@@ -360,7 +365,7 @@ export default function Page() {
         const querySnapshot = await getDocs(q);
         
         if (!querySnapshot.empty) {
-          setIdError("이미 사용 중인 아이디입니다.");
+          setIdError("This ID is already in use.");
         } else {
           setIdError(null);
         }
@@ -456,9 +461,9 @@ export default function Page() {
             </h1>
             
             <p className="text-lg md:text-xl font-medium text-white/60 leading-relaxed max-w-md mx-auto break-keep">
-              GitHub, 블로그, 포트폴리오까지.<br />
-              개발자를 위한 모든 링크를<br />
-              한 페이지에 담아보세요.
+              GitHub, Blog, Portfolio.<br />
+              All links for developers<br />
+              in a single page.
             </p>
 
             <div className="pt-4 pb-12 w-full flex justify-center">
@@ -473,7 +478,7 @@ export default function Page() {
                   <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                   <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                 </svg>
-                Google로 시작하기
+                Sign in with Google
               </Button>
             </div>
 
@@ -628,12 +633,12 @@ export default function Page() {
                             {isSubmitting ? (
                               <div className="flex items-center justify-center">
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                저장 중...
+                                SAVING...
                               </div>
                             ) : (
                               <>
                                 <Check className="w-4 h-4 mr-2" />
-                                저장
+                                SAVE
                               </>
                             )}
                           </Button>
@@ -646,7 +651,7 @@ export default function Page() {
                             className="flex-1 border-2 border-white text-white bg-transparent hover:bg-white hover:text-black rounded-none h-12 font-black uppercase tracking-tighter transition-colors flex items-center justify-center"
                           >
                             <X className="w-4 h-4 mr-2" />
-                            취소
+                            CANCEL
                           </Button>
                         </div>
                       </form>
@@ -659,7 +664,7 @@ export default function Page() {
               <span>@{profile?.id || "userid"}</span>
               <button className="hover:text-white transition-colors" onClick={() => {
                 navigator.clipboard.writeText(`@${profile?.id}`);
-                toast.success("ID가 복사되었습니다.");
+                toast.success("ID copied to clipboard.");
               }}>
                 <Copy className="w-3 h-3" />
               </button>

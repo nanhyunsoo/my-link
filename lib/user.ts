@@ -26,7 +26,14 @@ export async function getUserLinks(userId: string): Promise<Link[]> {
   
   const links: Link[] = [];
   querySnapshot.forEach((doc) => {
-    links.push({ id: doc.id, ...doc.data() } as Link);
+    const data = doc.data();
+    links.push({ 
+      id: doc.id, 
+      ...data,
+      // Convert Firebase Timestamp to a plain object to avoid serialization errors
+      createdAt: data.createdAt?.toMillis?.() || data.createdAt || null,
+      updatedAt: data.updatedAt?.toMillis?.() || data.updatedAt || null,
+    } as Link);
   });
   
   return links;

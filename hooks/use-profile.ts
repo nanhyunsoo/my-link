@@ -68,14 +68,14 @@ export function useUpdateProfile() {
         queryClient.setQueryData(["profile", variables.userId], context.previousProfile);
       }
       console.error("Error updating profile: ", err);
-      toast.error("프로필 수정 중 오류가 발생했습니다.");
+      toast.error("An error occurred while updating the profile.");
     },
     onSettled: (data, error, variables) => {
       // Always refetch after error or success to guarantee we are in sync with the server
       queryClient.invalidateQueries({ queryKey: ["profile", variables.userId] });
     },
     onSuccess: () => {
-      toast.success("프로필이 업데이트되었습니다.");
+      toast.success("Profile updated successfully.");
     },
   });
 }
