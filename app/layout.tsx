@@ -16,10 +16,8 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://my-link-mu.vercel.app";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(baseUrl),
+  metadataBase: new URL("https://my-link-mu.vercel.app"),
   title: {
     default: "MyLink - Development in One Link",
     template: "%s | MyLink",
@@ -28,15 +26,24 @@ export const metadata: Metadata = {
   openGraph: {
     title: "MyLink",
     description: "Development in One Link.",
-    url: baseUrl,
+    url: "https://my-link-mu.vercel.app",
     siteName: "MyLink",
     locale: "ko_KR",
     type: "website",
+    images: [
+      {
+        url: "https://my-link-mu.vercel.app/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "MyLink",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "MyLink",
     description: "Development in One Link.",
+    images: ["https://my-link-mu.vercel.app/opengraph-image"],
   },
 };
 
