@@ -1,7 +1,21 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:my-link-mu.vercel.app)"
+      "WebFetch(domain:my-link-mu.vercel.app)",
+      "Bash(curl -s \"https://my-link-mu.vercel.app\")",
+      "Bash(curl -sL \"https://my-link-mu.vercel.app\")",
+      "Bash(curl -sL \"https://my-link-bay-one.vercel.app/\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(curl -sI \"https://my-link-5icvqjmmp-wimpy0410-9624s-projects.vercel.app/opengraph-image\")",
+      "Bash(curl -sI \"https://my-link-bay-one.vercel.app/opengraph-image\")",
+      "Bash(gh deployment *)",
+      "Bash(gh run *)",
+      "Bash(curl -sL \"https://my-link-bay-one.vercel.app/opengraph-image\" -o /tmp/og_test.png)",
+      "Read(//tmp/**)",
+      "Bash(identify /tmp/og_test.png)",
+      "Bash(sips -g all /tmp/og_test.png)"
     ]
   }
 }
