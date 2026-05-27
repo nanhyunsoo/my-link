@@ -639,12 +639,11 @@ export default function Page() {
                           </Button>
                           <Button 
                             type="button" 
-                            variant="outline"
                             onClick={() => {
                               setIsProfileDialogOpen(false);
                               resetProfile();
                             }}
-                            className="flex-1 border-2 border-white text-white hover:bg-white hover:text-black rounded-none h-12 font-black uppercase tracking-tighter transition-all"
+                            className="flex-1 border-2 border-white text-white bg-transparent hover:bg-white hover:text-black rounded-none h-12 font-black uppercase tracking-tighter transition-colors flex items-center justify-center"
                           >
                             <X className="w-4 h-4 mr-2" />
                             취소
