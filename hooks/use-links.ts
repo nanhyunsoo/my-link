@@ -19,7 +19,7 @@ export function useLinks(userId: string | undefined) {
   return useQuery({
     queryKey: ["links", userId],
     queryFn: async () => {
-      if (!userId) return [];
+      if (!userId || !db) return [];
       const q = query(collection(db, `users/${userId}/links`), orderBy("createdAt", "desc"));
       const querySnapshot = await getDocs(q);
       const linksData: Link[] = [];

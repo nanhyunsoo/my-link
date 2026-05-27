@@ -3,6 +3,8 @@ import Image from "next/image";
 import { getUserProfileById, getUserLinks } from "@/lib/user";
 import { LinkCard } from "@/components/link-card";
 
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }

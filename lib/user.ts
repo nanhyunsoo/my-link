@@ -4,6 +4,7 @@ import { type UserProfile } from "@/hooks/use-profile";
 import { type Link } from "@/data/links";
 
 export async function getUserProfileById(id: string): Promise<{ profile: UserProfile; userId: string } | null> {
+  if (!db) return null;
   const usersRef = collection(db, "users");
   const q = query(usersRef, where("id", "==", id));
   const querySnapshot = await getDocs(q);
@@ -20,6 +21,7 @@ export async function getUserProfileById(id: string): Promise<{ profile: UserPro
 }
 
 export async function getUserLinks(userId: string): Promise<Link[]> {
+  if (!db) return [];
   const linksRef = collection(db, `users/${userId}/links`);
   const q = query(linksRef, orderBy("createdAt", "desc"));
   const querySnapshot = await getDocs(q);

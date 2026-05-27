@@ -14,7 +14,7 @@ export function useProfile(user: { uid: string; email?: string | null; photoURL?
   return useQuery({
     queryKey: ["profile", user?.uid],
     queryFn: async () => {
-      if (!user) return null;
+      if (!user || !db) return null;
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
 

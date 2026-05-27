@@ -14,13 +14,18 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+const app = 
+  getApps().length > 0 
+    ? getApp() 
+    : firebaseConfig.apiKey 
+      ? initializeApp(firebaseConfig) 
+      : null;
 
 // Initialize Services
-const db = getFirestore(app);
-const auth = getAuth(app);
+const db = app ? getFirestore(app) : null as any;
+const auth = app ? getAuth(app) : null as any;
 
 // Analytics (Server-side rendering check)
-const analytics = typeof window !== "undefined" ? isSupported().then((yes) => yes ? getAnalytics(app) : null) : null;
+const analytics = (typeof window !== "undefined" && app) ? isSupported().then((yes) => yes ? getAnalytics(app) : null) : null;
 
 export { app, db, auth, analytics };
