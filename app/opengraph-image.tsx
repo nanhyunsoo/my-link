@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 export const alt = "MyLink - Development in One Link";
 export const size = {

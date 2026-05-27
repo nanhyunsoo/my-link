@@ -29,6 +29,7 @@ export default async function Image({ params }: Props) {
   const displayName = userData?.profile?.name || username;
   const userId = userData?.profile?.id || username;
 
+  // Use a simplified version without external fonts for better reliability
   return new ImageResponse(
     (
       <div
