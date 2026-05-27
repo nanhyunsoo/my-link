@@ -37,18 +37,18 @@ export function Header() {
         {!loading && (
           <>
             {user ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1 sm:gap-4">
                 {profile && (
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
                     render={
                       <Link href={`/${profile.id}`}>
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        My Page
+                        <ExternalLink className="w-4 h-4 sm:mr-2" />
+                        <span className="hidden sm:inline">My Page</span>
                       </Link>
                     }
-                    className="hidden sm:flex rounded-none border-2 border-white hover:bg-white hover:text-black transition-colors font-bold uppercase tracking-tight"
+                    className="text-white hover:bg-white/10 rounded-none font-bold uppercase tracking-tight px-3"
                   />
                 )}
                 
