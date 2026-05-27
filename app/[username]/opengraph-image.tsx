@@ -82,8 +82,8 @@ export default async function Image({ params }: Props) {
               textTransform: "uppercase",
             }}
           >
-            {displayName}의 <br />
-            <span style={{ color: "#FFFFFF", background: "rgba(255,255,255,0.1)", padding: "0 10px" }}>마이링크</span>
+            {displayName} on <br />
+            <span style={{ color: "#FFFFFF", background: "rgba(255,255,255,0.1)", padding: "0 10px" }}>MyLink</span>
           </h1>
           
           <div

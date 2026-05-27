@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: `${baseUrl}/opengraph-image?v=3`, // Cache busting
+        url: `${baseUrl}/opengraph-image?v=4`, // Cache busting
         width: 1200,
         height: 630,
         alt: "MyLink",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "MyLink",
     description: "Development in One Link.",
-    images: [`${baseUrl}/opengraph-image?v=3`],
+    images: [`${baseUrl}/opengraph-image?v=4`],
   },
 };
 
