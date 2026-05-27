@@ -45,13 +45,37 @@ export function useUpdateProfile() {
       await updateDoc(docRef, data);
       return data;
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["profile", variables.userId] });
-      toast.success("프로필이 업데이트되었습니다.");
+    onMutate: async ({ userId, data }) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: ["profile", userId] });
+
+      // Snapshot the previous value
+      const previousProfile = queryClient.getQueryData<UserProfile>(["profile", userId]);
+
+      // Optimistically update to the new value
+      if (previousProfile) {
+        queryClient.setQueryData(["profile", userId], {
+          ...previousProfile,
+          ...data,
+        });
+      }
+
+      return { previousProfile };
     },
-    onError: (error) => {
-      console.error("Error updating profile: ", error);
+    onError: (err, variables, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousProfile) {
+        queryClient.setQueryData(["profile", variables.userId], context.previousProfile);
+      }
+      console.error("Error updating profile: ", err);
       toast.error("프로필 수정 중 오류가 발생했습니다.");
+    },
+    onSettled: (data, error, variables) => {
+      // Always refetch after error or success to guarantee we are in sync with the server
+      queryClient.invalidateQueries({ queryKey: ["profile", variables.userId] });
+    },
+    onSuccess: () => {
+      toast.success("프로필이 업데이트되었습니다.");
     },
   });
 }
