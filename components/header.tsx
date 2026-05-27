@@ -3,7 +3,7 @@
 import React from "react";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
-import { Share2, LogOut, LogIn } from "lucide-react";
+import { Share2, LogOut, LogIn, User } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -13,13 +13,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { useProfile } from "@/hooks/use-profile";
 
 export function Header() {
   const { user, login, logout, loading } = useAuth();
+  const { data: profile } = useProfile(user);
 
   const copyToClipboard = () => {
-    if (user) {
-      const url = `${window.location.origin}/p/${user.uid.slice(0, 8)}`;
+    if (profile) {
+      const url = `${window.location.origin}/${profile.id}`;
       navigator.clipboard.writeText(url);
       toast.success("링크가 클립보드에 복사되었습니다.");
     }
@@ -38,27 +40,38 @@ export function Header() {
               <DropdownMenu>
                 <DropdownMenuTrigger className="outline-none">
                   <div className="relative w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-black flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
-                    {user.photoURL ? (
+                    {profile?.photoURL ? (
                       <Image 
-                        src={user.photoURL} 
-                        alt={user.displayName || "User"} 
+                        src={profile.photoURL} 
+                        alt={profile.name || "User"} 
                         fill 
                         className="object-cover"
                         unoptimized
                       />
                     ) : (
                       <span className="text-sm font-black italic">
-                        {user.displayName?.slice(0, 2).toUpperCase() || "ML"}
+                        {profile?.name?.slice(0, 2).toUpperCase() || user.displayName?.slice(0, 2).toUpperCase() || "ML"}
                       </span>
                     )}
                   </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={copyToClipboard} className="gap-2">
+                <DropdownMenuContent align="end" className="w-48">
+                  {profile && (
+                    <DropdownMenuItem
+                      render={
+                        <Link href={`/${profile.id}`}>
+                          <User className="w-4 h-4 mr-2" />
+                          View My Page
+                        </Link>
+                      }
+                      className="cursor-pointer"
+                    />
+                  )}
+                  <DropdownMenuItem onClick={copyToClipboard} className="gap-2 cursor-pointer">
                     <Share2 className="w-4 h-4" />
                     Share My Link
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={logout} className="gap-2 text-red-500 hover:text-white hover:bg-red-500">
+                  <DropdownMenuItem onClick={logout} className="gap-2 text-red-500 hover:text-white hover:bg-red-500 cursor-pointer">
                     <LogOut className="w-4 h-4" />
                     Logout
                   </DropdownMenuItem>
