@@ -29,7 +29,7 @@ export function Header() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-6 bg-[#0D0D0D]/80 backdrop-blur-md border-b border-white/10">
-      <Link href="/" className="text-xl font-black tracking-tighter uppercase italic">
+      <Link href="/" className="text-xl font-black tracking-tighter uppercase italic text-white">
         MyLink
       </Link>
       
