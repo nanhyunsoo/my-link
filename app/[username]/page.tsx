@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       username: userData.profile.id,
       images: [
         {
-          url: `${baseUrl}/${username}/opengraph-image?v=2`,
+          url: `${baseUrl}/${username}/opengraph-image?v=3`,
           width: 1200,
           height: 630,
           alt: `${userData.profile.name}'s MyLink`,
@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       card: "summary_large_image",
       title: `${userData.profile.name} (@${userData.profile.id}) | MyLink`,
       description: userData.profile.bio,
-      images: [`${baseUrl}/${username}/opengraph-image?v=2`],
+      images: [`${baseUrl}/${username}/opengraph-image?v=3`],
     },
   };
 }

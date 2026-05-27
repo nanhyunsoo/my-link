@@ -51,7 +51,7 @@ export default async function Image({ params }: Props) {
             alignItems: "center",
             justifyContent: "center",
             border: "8px solid white",
-            padding: "50px 70px",
+            padding: "60px 80px",
             backgroundColor: "black",
             position: "relative",
           }}
@@ -75,30 +75,31 @@ export default async function Image({ params }: Props) {
               fontWeight: 900,
               color: "white",
               margin: 0,
-              lineHeight: 1.2,
+              lineHeight: 1.1,
               letterSpacing: "-0.05em",
               textAlign: "center",
               fontStyle: "italic",
               textTransform: "uppercase",
             }}
           >
-            {displayName}의 마이링크
+            {displayName}의 <br />
+            <span style={{ color: "#FFFFFF", background: "rgba(255,255,255,0.1)", padding: "0 10px" }}>마이링크</span>
           </h1>
           
           <div
             style={{
-              marginTop: "40px",
-              padding: "12px 24px",
+              marginTop: "48px",
+              padding: "14px 28px",
               backgroundColor: "white",
               display: "flex",
             }}
           >
             <span
               style={{
-                fontSize: "24px",
+                fontSize: "28px",
                 fontWeight: 900,
                 color: "black",
-                letterSpacing: "0.1em",
+                letterSpacing: "0.15em",
                 textTransform: "uppercase",
               }}
             >
@@ -118,7 +119,7 @@ export default async function Image({ params }: Props) {
         >
           <div style={{ width: "40px", height: "2px", backgroundColor: "white" }} />
           <span style={{ color: "white", fontSize: "16px", fontWeight: 900, letterSpacing: "0.4em", textTransform: "uppercase" }}>
-            Unify Your Presence
+            The Developer's Identity
           </span>
           <div style={{ width: "40px", height: "2px", backgroundColor: "white" }} />
         </div>
