@@ -52,7 +52,7 @@ export default function StatsPage() {
     const pieData = sorted.slice(0, 5).map((link, index) => ({
       name: link.title,
       clicks: link.clicks || 0,
-      fill: index === 0 ? "white" : `rgba(255, 255, 255, ${0.9 - index * 0.12})`,
+      fill: index === 0 ? "white" : `rgba(255, 255, 255, ${0.85 - index * 0.1})`,
     }));
 
     return { total, topLink, tieCount, barData, pieData, sorted };
@@ -142,29 +142,28 @@ export default function StatsPage() {
                   >
                     <XAxis 
                       dataKey="name" 
-                      stroke="#AAA" 
+                      stroke="#DDD" 
                       fontSize={10} 
                       fontWeight="bold"
-                      tick={{ fill: '#AAA' }}
+                      tick={{ fill: '#DDD' }}
                       tickFormatter={(value) => value.length > 8 ? `${value.slice(0, 8)}...` : value}
                     />
                     <YAxis 
-                      stroke="#AAA" 
+                      stroke="#DDD" 
                       fontSize={10} 
                       fontWeight="bold"
-                      tick={{ fill: '#AAA' }}
+                      tick={{ fill: '#DDD' }}
                     />
-                    <ChartTooltip content={<ChartTooltipContent className="bg-black border-white/20 text-white" />} />
+                    <ChartTooltip content={<ChartTooltipContent className="bg-black border-white/40 text-white" />} />
                     <Bar 
                       dataKey="clicks" 
-                      fill="white" 
                       radius={[2, 2, 0, 0]}
-                      maxBarSize={40} // Prevent fat bars when few links
+                      maxBarSize={40} 
                     >
                       {stats.barData.map((entry, index) => (
                         <Cell 
                           key={`cell-${index}`} 
-                          fill={index === 0 ? "hsl(var(--primary))" : `rgba(255, 255, 255, ${0.85 - index * 0.05})`} 
+                          fill={index === 0 ? "hsl(var(--primary))" : "#FFFFFF"} 
                         />
                       ))}
                     </Bar>
