@@ -7,6 +7,7 @@ import { QueryProvider } from "@/components/query-provider"
 import { Header } from "@/components/header"
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
+import { Metadata } from "next";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'})
 
@@ -14,6 +15,20 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+export const metadata: Metadata = {
+  title: {
+    default: "MyLink - Development in One Link",
+    template: "%s | MyLink",
+  },
+  description: "All your developer links in a single, high-contrast, brutalist page.",
+  openGraph: {
+    title: "MyLink",
+    description: "Development in One Link.",
+    type: "website",
+    siteName: "MyLink",
+  },
+};
 
 export default function RootLayout({
   children,

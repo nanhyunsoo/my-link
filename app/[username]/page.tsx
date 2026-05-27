@@ -2,17 +2,30 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getUserProfileById, getUserLinks } from "@/lib/user";
 import { LinkCard } from "@/components/link-card";
+import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ username: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { username } = await params;
+  const userData = await getUserProfileById(username);
+  
+  if (!userData) return { title: "User Not Found" };
+  
+  return {
+    title: `${userData.profile.name} (@${userData.profile.id})`,
+    description: userData.profile.bio,
+  };
 }
 
 export default async function PublicProfilePage({ params }: PageProps) {
-  const { id } = await params;
+  const { username } = await params;
   
-  const userData = await getUserProfileById(id);
+  const userData = await getUserProfileById(username);
   
   if (!userData) {
     notFound();
