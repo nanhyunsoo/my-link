@@ -3,7 +3,7 @@
 import React from "react";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
-import { Share2, LogOut, LogIn, User } from "lucide-react";
+import { Share2, LogOut, LogIn, User, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -37,8 +37,23 @@ export function Header() {
         {!loading && (
           <>
             {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger className="outline-none">
+              <div className="flex items-center gap-3">
+                {profile && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    render={
+                      <Link href={`/${profile.id}`}>
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        My Page
+                      </Link>
+                    }
+                    className="hidden sm:flex rounded-none border-2 border-white hover:bg-white hover:text-black transition-colors font-bold uppercase tracking-tight"
+                  />
+                )}
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="outline-none">
                   <div className="relative w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-black flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
                     {profile?.photoURL ? (
                       <Image 
@@ -77,6 +92,7 @@ export function Header() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+              </div>
             ) : (
               <Button 
                 variant="outline" 
