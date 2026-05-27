@@ -42,6 +42,7 @@ export function Header() {
                   <Button
                     variant="ghost"
                     size="sm"
+                    nativeButton={false}
                     render={
                       <Link href={`/${profile.id}`}>
                         <ExternalLink className="w-4 h-4 sm:mr-2" />
