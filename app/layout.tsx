@@ -16,8 +16,12 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
+// NEXT_PUBLIC_BASE_URL 환경변수 우선 사용, 없으면 VERCEL_URL, 없으면 폴백
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+  || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://my-link-bay-one.vercel.app");
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://my-link-mu.vercel.app"),
+  metadataBase: new URL(baseUrl),
   title: {
     default: "MyLink - Development in One Link",
     template: "%s | MyLink",
@@ -26,13 +30,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "MyLink",
     description: "Development in One Link.",
-    url: "https://my-link-mu.vercel.app",
+    url: baseUrl,
     siteName: "MyLink",
     locale: "ko_KR",
     type: "website",
     images: [
       {
-        url: "https://my-link-mu.vercel.app/opengraph-image",
+        url: `${baseUrl}/opengraph-image`,
         width: 1200,
         height: 630,
         alt: "MyLink",
@@ -43,7 +47,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "MyLink",
     description: "Development in One Link.",
-    images: ["https://my-link-mu.vercel.app/opengraph-image"],
+    images: [`${baseUrl}/opengraph-image`],
   },
 };
 

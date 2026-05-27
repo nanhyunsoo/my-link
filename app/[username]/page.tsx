@@ -10,12 +10,15 @@ interface PageProps {
   params: Promise<{ username: string }>;
 }
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+  || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://my-link-bay-one.vercel.app");
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { username } = await params;
   const userData = await getUserProfileById(username);
-  
+
   if (!userData) return { title: "User Not Found" };
-  
+
   return {
     title: `${userData.profile.name} (@${userData.profile.id})`,
     description: userData.profile.bio,
@@ -26,7 +29,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       username: userData.profile.id,
       images: [
         {
-          url: `https://my-link-mu.vercel.app/${username}/opengraph-image`,
+          url: `${baseUrl}/${username}/opengraph-image`,
           width: 1200,
           height: 630,
           alt: `${userData.profile.name}'s MyLink`,
@@ -37,7 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       card: "summary_large_image",
       title: `${userData.profile.name} (@${userData.profile.id}) | MyLink`,
       description: userData.profile.bio,
-      images: [`https://my-link-mu.vercel.app/${username}/opengraph-image`],
+      images: [`${baseUrl}/${username}/opengraph-image`],
     },
   };
 }
