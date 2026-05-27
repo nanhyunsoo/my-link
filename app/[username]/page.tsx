@@ -19,6 +19,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${userData.profile.name} (@${userData.profile.id})`,
     description: userData.profile.bio,
+    openGraph: {
+      title: `${userData.profile.name} (@${userData.profile.id}) | MyLink`,
+      description: userData.profile.bio,
+      type: "profile",
+      username: userData.profile.id,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${userData.profile.name} (@${userData.profile.id}) | MyLink`,
+      description: userData.profile.bio,
+    },
   };
 }
 

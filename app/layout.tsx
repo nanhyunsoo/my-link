@@ -17,6 +17,7 @@ const fontMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://my-link-mu.vercel.app"), // Replace with your actual domain if different
   title: {
     default: "MyLink - Development in One Link",
     template: "%s | MyLink",
@@ -25,8 +26,15 @@ export const metadata: Metadata = {
   openGraph: {
     title: "MyLink",
     description: "Development in One Link.",
-    type: "website",
+    url: "https://my-link-mu.vercel.app",
     siteName: "MyLink",
+    locale: "ko_KR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MyLink",
+    description: "Development in One Link.",
   },
 };
 
