@@ -18,28 +18,39 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!userData) return { title: "User Not Found" };
 
+  const title = `${userData.profile.name} (@${userData.profile.id})`;
+  const description = userData.profile.bio || `Check out ${userData.profile.name}'s developer links on MyLink. GitHub, Portfolio, and more.`;
+
   return {
-    title: `${userData.profile.name} (@${userData.profile.id})`,
-    description: userData.profile.bio,
+    title,
+    description,
+    keywords: [userData.profile.name, userData.profile.id, "developer", "portfolio", "links"],
     openGraph: {
-      title: `${userData.profile.name} (@${userData.profile.id}) | MyLink`,
-      description: userData.profile.bio,
+      title: `${title} | MyLink`,
+      description,
+      url: `${baseUrl}/${username}`,
+      siteName: "MyLink",
+      locale: "ko_KR",
       type: "profile",
+      firstName: userData.profile.name,
       username: userData.profile.id,
       images: [
         {
           url: `${baseUrl}/${username}/opengraph-image?v=5`,
           width: 1200,
           height: 630,
-          alt: `${userData.profile.name}'s MyLink`,
+          alt: `${userData.profile.name}'s MyLink Profile`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${userData.profile.name} (@${userData.profile.id}) | MyLink`,
-      description: userData.profile.bio,
+      title: `${title} | MyLink`,
+      description,
       images: [`${baseUrl}/${username}/opengraph-image?v=5`],
+    },
+    alternates: {
+      canonical: `${baseUrl}/${username}`,
     },
   };
 }

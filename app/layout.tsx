@@ -24,29 +24,49 @@ export const metadata: Metadata = {
     default: "MyLink - Development in One Link",
     template: "%s | MyLink",
   },
-  description: "All your developer links in a single, high-contrast, brutalist page.",
+  description: "Share all your developer links—GitHub, Blog, Portfolio—in a single, high-contrast, brutalist page. Optimized for developers and recruiters.",
+  keywords: ["developer links", "link-in-bio for developers", "portfolio links", "github links", "developer profile", "mylink", "tech portfolio"],
+  authors: [{ name: "MyLink Team" }],
+  creator: "MyLink Team",
+  publisher: "MyLink",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   openGraph: {
-    title: "MyLink",
-    description: "Development in One Link.",
+    title: "MyLink - Development in One Link",
+    description: "Share all your developer links in a single, high-contrast page.",
     url: baseUrl,
     siteName: "MyLink",
     locale: "ko_KR",
     type: "website",
     images: [
       {
-        url: `${baseUrl}/opengraph-image?v=5`, // Cache busting
+        url: `${baseUrl}/opengraph-image?v=5`,
         width: 1200,
         height: 630,
-        alt: "MyLink",
+        alt: "MyLink - Development in One Link",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MyLink",
-    description: "Development in One Link.",
+    title: "MyLink - Development in One Link",
+    description: "Share all your developer links in a single, high-contrast page.",
     images: [`${baseUrl}/opengraph-image?v=5`],
+    creator: "@mylink",
   },
+  verification: {
+    google: "google-site-verification-id", // User might need to update this
+  },
+  category: "technology",
 };
 
 export default function RootLayout({

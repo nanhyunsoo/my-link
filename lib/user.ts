@@ -40,3 +40,19 @@ export async function getUserLinks(userId: string): Promise<Link[]> {
   
   return links;
 }
+
+export async function getAllUserIds(): Promise<string[]> {
+  if (!db) return [];
+  const usersRef = collection(db, "users");
+  const querySnapshot = await getDocs(usersRef);
+  
+  const ids: string[] = [];
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    if (data.id) {
+      ids.push(data.id);
+    }
+  });
+  
+  return ids;
+}
