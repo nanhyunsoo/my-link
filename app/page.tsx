@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { type Link } from "@/data/links";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc, getDocs, where } from "firebase/firestore";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Share2, ExternalLink, Copy, Plus, Loader2, Edit2, Trash2, Check, X, LogIn } from "lucide-react";
@@ -37,7 +37,20 @@ const linkSchema = z.object({
   }, "올바른 URL 형식이 아닙니다."),
 });
 
+const profileSchema = z.object({
+  name: z.string()
+    .min(2, "이름은 2글자 이상이어야 합니다.")
+    .max(20, "이름은 20글자 이하여야 합니다.")
+    .regex(/^[a-zA-Z0-9가-힣\s]+$/, "특수문자는 사용할 수 없습니다."),
+  id: z.string()
+    .min(3, "아이디는 3글자 이상이어야 합니다.")
+    .max(20, "아이디는 20글자 이하여야 합니다.")
+    .regex(/^[a-z0-9_]+$/, "아이디는 영문 소문자, 숫자, 언더바(_)만 가능합니다."),
+  bio: z.string().max(100, "소개는 100글자 이하여야 합니다."),
+});
+
 type LinkFormValues = z.infer<typeof linkSchema>;
+type ProfileFormValues = z.infer<typeof profileSchema>;
 
 interface UserProfile {
   name: string;
@@ -286,11 +299,124 @@ export default function Page() {
   const [links, setLinks] = useState<Link[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCheckingName, setIsCheckingName] = useState(false);
+  const [isCheckingId, setIsCheckingId] = useState(false);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [idError, setIdError] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const {
+    register: registerProfile,
+    handleSubmit: handleProfileSubmit,
+    reset: resetProfile,
+    watch: watchProfile,
+    formState: { errors: profileErrors },
+  } = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+  });
+
+  const watchedName = watchProfile("name");
+  const watchedId = watchProfile("id");
+
+  useEffect(() => {
+    const checkName = async () => {
+      if (!watchedName || !profile || watchedName === profile.name) {
+        setNameError(null);
+        return;
+      }
+
+      if (watchedName.length < 2) return;
+
+      setIsCheckingName(true);
+      try {
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("name", "==", watchedName));
+        const querySnapshot = await getDocs(q);
+        
+        if (!querySnapshot.empty) {
+          setNameError("이미 사용 중인 이름입니다.");
+        } else {
+          setNameError(null);
+        }
+      } catch (error) {
+        console.error("Error checking name: ", error);
+      } finally {
+        setIsCheckingName(false);
+      }
+    };
+
+    const timeoutId = setTimeout(checkName, 500);
+    return () => clearTimeout(timeoutId);
+  }, [watchedName, profile]);
+
+  useEffect(() => {
+    const checkId = async () => {
+      if (!watchedId || !profile || watchedId === profile.id) {
+        setIdError(null);
+        return;
+      }
+
+      if (watchedId.length < 3) return;
+
+      setIsCheckingId(true);
+      try {
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("id", "==", watchedId));
+        const querySnapshot = await getDocs(q);
+        
+        if (!querySnapshot.empty) {
+          setIdError("이미 사용 중인 아이디입니다.");
+        } else {
+          setIdError(null);
+        }
+      } catch (error) {
+        console.error("Error checking id: ", error);
+      } finally {
+        setIsCheckingId(false);
+      }
+    };
+
+    const timeoutId = setTimeout(checkId, 500);
+    return () => clearTimeout(timeoutId);
+  }, [watchedId, profile]);
+
+  useEffect(() => {
+    if (profile) {
+      resetProfile({
+        name: profile.name,
+        id: profile.id,
+        bio: profile.bio,
+      });
+    }
+  }, [profile, resetProfile, isProfileDialogOpen]);
+
+  const onProfileSubmit = async (data: ProfileFormValues) => {
+    if (!user || !profile || nameError || idError) return;
+    setIsSubmitting(true);
+
+    try {
+      const docRef = doc(db, "users", user.uid);
+      await updateDoc(docRef, {
+        name: data.name,
+        id: data.id,
+        bio: data.bio,
+      });
+      
+      setProfile({ ...profile, name: data.name, id: data.id, bio: data.bio });
+      setIsProfileDialogOpen(false);
+      toast.success("프로필이 업데이트되었습니다.");
+    } catch (error) {
+      console.error("Error updating profile: ", error);
+      toast.error("프로필 수정 중 오류가 발생했습니다.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     if (!user) {
@@ -464,7 +590,7 @@ export default function Page() {
     <div className="min-h-screen bg-[#0D0D0D] text-white font-sans selection:bg-white selection:text-black">
       <main className="max-w-2xl mx-auto pt-32 pb-24 px-6 flex flex-col items-center">
         {/* Profile Section */}
-        <section className="flex flex-col items-center text-center mb-16 space-y-6">
+        <section className="flex flex-col items-center text-center mb-16 space-y-6 w-full">
           <div className="relative group">
             <div className="absolute -inset-1 bg-white opacity-25 group-hover:opacity-100 transition duration-500 blur-sm rounded-full"></div>
             <div className="relative w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-black flex items-center justify-center">
@@ -484,10 +610,118 @@ export default function Page() {
             </div>
           </div>
           
-          <div className="space-y-2">
-            <h1 className="text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none">
-              {profile?.name || "Username"}
-            </h1>
+          <div className="space-y-2 relative group/name w-full">
+            <div className="flex items-center justify-center gap-3">
+              <h1 className="text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none truncate max-w-[80%]">
+                {profile?.name || "Username"}
+              </h1>
+              <Dialog open={isProfileDialogOpen} onOpenChange={setIsProfileDialogOpen}>
+                <DialogTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="w-10 h-10 text-white hover:text-white hover:bg-white/10 rounded-none transition-all"
+                    >
+                      <Edit2 className="w-5 h-5" />
+                    </Button>
+                  }
+                />
+                <DialogContent className="bg-[#0D0D0D] border-2 border-white rounded-none text-white sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle className="text-3xl font-black uppercase tracking-tighter italic">Edit Profile</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={handleProfileSubmit(onProfileSubmit)} className="space-y-6 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="profile-name" className="text-sm font-bold uppercase tracking-widest text-white/60">Display Name</Label>
+                      <div className="relative">
+                        <Input
+                          id="profile-name"
+                          placeholder="Your Display Name"
+                          className={`bg-black border-2 rounded-none h-12 text-lg font-bold transition-colors ${
+                            profileErrors.name || nameError ? "border-destructive" : "border-white/20 focus:border-white"
+                          }`}
+                          {...registerProfile("name")}
+                        />
+                        {isCheckingName && (
+                          <div className="absolute right-3 top-3">
+                            <Loader2 className="w-6 h-6 animate-spin text-white/30" />
+                          </div>
+                        )}
+                      </div>
+                      {(profileErrors.name || nameError) && (
+                        <p className="text-destructive text-xs font-bold uppercase tracking-tight">
+                          {profileErrors.name?.message || nameError}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="profile-id" className="text-sm font-bold uppercase tracking-widest text-white/60">User ID</Label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-3 text-lg font-bold text-white/30">@</span>
+                        <Input
+                          id="profile-id"
+                          placeholder="username"
+                          className={`bg-black border-2 rounded-none h-12 pl-8 text-lg font-bold transition-colors ${
+                            profileErrors.id || idError ? "border-destructive" : "border-white/20 focus:border-white"
+                          }`}
+                          {...registerProfile("id")}
+                        />
+                        {isCheckingId && (
+                          <div className="absolute right-3 top-3">
+                            <Loader2 className="w-6 h-6 animate-spin text-white/30" />
+                          </div>
+                        )}
+                      </div>
+                      {(profileErrors.id || idError) && (
+                        <p className="text-destructive text-xs font-bold uppercase tracking-tight">
+                          {profileErrors.id?.message || idError}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="bio" className="text-sm font-bold uppercase tracking-widest text-white/60">Bio</Label>
+                      <textarea
+                        id="bio"
+                        placeholder="Tell us about yourself"
+                        rows={3}
+                        className={`w-full bg-black border-2 border-white/20 focus:border-white rounded-none p-3 text-lg font-bold transition-colors outline-none resize-none ${
+                          profileErrors.bio ? "border-destructive" : ""
+                        }`}
+                        {...registerProfile("bio")}
+                      />
+                      {profileErrors.bio && (
+                        <p className="text-destructive text-xs font-bold uppercase tracking-tight">{profileErrors.bio.message}</p>
+                      )}
+                    </div>
+                    <div className="mt-6 flex gap-3">
+                      <Button 
+                        type="button" 
+                        variant="outline"
+                        onClick={() => setIsProfileDialogOpen(false)}
+                        className="flex-1 border-2 border-white text-white hover:bg-white hover:text-black rounded-none h-14 text-xl font-black uppercase tracking-tighter transition-all"
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        disabled={isSubmitting}
+                        className="flex-1 bg-white text-black hover:bg-white/90 border-0 rounded-none h-14 text-xl font-black uppercase tracking-tighter transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        {isSubmitting ? (
+                          <div className="flex items-center justify-center">
+                            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                            Saving...
+                          </div>
+                        ) : (
+                          "Save"
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </div>
             <div className="flex items-center justify-center gap-2 text-white/60 font-mono text-sm tracking-widest uppercase">
               <span>@{profile?.id || "userid"}</span>
               <button className="hover:text-white transition-colors" onClick={() => {
