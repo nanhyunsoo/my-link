@@ -16,8 +16,12 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
+const baseUrl = process.env.VERCEL_URL 
+  ? `https://${process.env.VERCEL_URL}` 
+  : "http://localhost:3000";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://my-link-mu.vercel.app"), // Replace with your actual domain if different
+  metadataBase: new URL(baseUrl),
   title: {
     default: "MyLink - Development in One Link",
     template: "%s | MyLink",
@@ -26,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "MyLink",
     description: "Development in One Link.",
-    url: "https://my-link-mu.vercel.app",
+    url: baseUrl,
     siteName: "MyLink",
     locale: "ko_KR",
     type: "website",

@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { getUserProfileById } from "@/lib/user";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 export const alt = "MyLink Profile";
 export const size = {
@@ -12,14 +12,19 @@ export const size = {
 export const contentType = "image/png";
 
 interface Props {
-  params: {
+  params: Promise<{
     username: string;
-  };
+  }>;
 }
 
 export default async function Image({ params }: Props) {
-  const { username } = params;
-  const userData = await getUserProfileById(username);
+  const { username } = await params;
+  let userData = null;
+  try {
+    userData = await getUserProfileById(username);
+  } catch (error) {
+    console.error("Error fetching user profile for OG:", error);
+  }
   
   const displayName = userData?.profile?.name || username;
   const userId = userData?.profile?.id || username;
@@ -35,7 +40,6 @@ export default async function Image({ params }: Props) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          fontFamily: "sans-serif",
           border: "24px solid white",
           padding: "40px",
         }}

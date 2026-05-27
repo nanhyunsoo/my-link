@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 export const alt = "MyLink - Development in One Link";
 export const size = {
@@ -24,76 +24,95 @@ export default function Image() {
           justifyContent: "center",
           fontFamily: "sans-serif",
           border: "24px solid white",
-          padding: "40px",
+          position: "relative",
         }}
       >
+        {/* Main Content Box Container to handle the offset shadow */}
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "8px solid white",
-            padding: "60px 80px",
-            backgroundColor: "black",
             position: "relative",
           }}
         >
-          {/* Offset Shadow effect */}
-          <div 
+          {/* Subtle Offset Shadow */}
+          <div
             style={{
               position: "absolute",
-              top: "20px",
-              left: "20px",
-              right: "-20px",
-              bottom: "-20px",
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
-              zIndex: -1,
+              top: "16px",
+              left: "16px",
+              width: "100%",
+              height: "100%",
+              border: "8px solid rgba(255, 255, 255, 0.15)",
+              backgroundColor: "transparent",
             }}
           />
-          
-          <h1
+
+          {/* Central Black Box */}
+          <div
             style={{
-              fontSize: "120px",
-              fontWeight: 900,
-              color: "white",
-              margin: 0,
-              lineHeight: 1,
-              letterSpacing: "-0.05em",
-              textTransform: "uppercase",
-              fontStyle: "italic",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "8px solid white",
+              padding: "80px 100px",
+              backgroundColor: "#0D0D0D",
+              zIndex: 1,
             }}
           >
-            MyLink
-          </h1>
-          <p
-            style={{
-              fontSize: "32px",
-              fontWeight: 700,
-              color: "rgba(255, 255, 255, 0.7)",
-              margin: "20px 0 0 0",
-              letterSpacing: "0.3em",
-              textTransform: "uppercase",
-            }}
-          >
-            Development in One Link
-          </p>
+            <h1
+              style={{
+                fontSize: "140px",
+                fontWeight: 900,
+                color: "white",
+                margin: 0,
+                lineHeight: 0.8,
+                letterSpacing: "-0.02em",
+                textTransform: "uppercase",
+                fontStyle: "italic",
+              }}
+            >
+              MyLink
+            </h1>
+            <p
+              style={{
+                fontSize: "24px",
+                fontWeight: 400,
+                color: "white",
+                margin: "40px 0 0 0",
+                letterSpacing: "0.6em",
+                textTransform: "uppercase",
+                opacity: 0.9,
+              }}
+            >
+              Development in One Link
+            </p>
+          </div>
         </div>
-        
-        <div 
+
+        {/* Footer: Powered by ASALDESIGN */}
+        <div
           style={{
             position: "absolute",
-            bottom: "60px",
+            bottom: "64px",
             display: "flex",
             alignItems: "center",
-            gap: "10px",
+            gap: "24px",
           }}
         >
-          <div style={{ width: "40px", height: "2px", backgroundColor: "white" }} />
-          <span style={{ color: "white", fontSize: "16px", fontWeight: 900, letterSpacing: "0.4em", textTransform: "uppercase" }}>
+          <div style={{ width: "60px", height: "2px", backgroundColor: "white" }} />
+          <span
+            style={{
+              color: "white",
+              fontSize: "14px",
+              fontWeight: 900,
+              letterSpacing: "0.5em",
+              textTransform: "uppercase",
+            }}
+          >
             Powered by ASALDESIGN
           </span>
-          <div style={{ width: "40px", height: "2px", backgroundColor: "white" }} />
+          <div style={{ width: "60px", height: "2px", backgroundColor: "white" }} />
         </div>
       </div>
     ),
