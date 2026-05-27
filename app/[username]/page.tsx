@@ -10,7 +10,7 @@ interface PageProps {
   params: Promise<{ username: string }>;
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://my-link-bay-one.vercel.app";
+const baseUrl = "https://my-link-bay-one.vercel.app";
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { username } = await params;
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       username: userData.profile.id,
       images: [
         {
-          url: `${baseUrl}/${username}/opengraph-image`,
+          url: `${baseUrl}/${username}/opengraph-image?v=2`,
           width: 1200,
           height: 630,
           alt: `${userData.profile.name}'s MyLink`,
@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       card: "summary_large_image",
       title: `${userData.profile.name} (@${userData.profile.id}) | MyLink`,
       description: userData.profile.bio,
-      images: [`${baseUrl}/${username}/opengraph-image`],
+      images: [`${baseUrl}/${username}/opengraph-image?v=2`],
     },
   };
 }
